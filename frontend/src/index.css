@@ -1,13 +1,67 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Define color variables #f8f8f8*/
+:root {
+  --main-blue: #000f5f;
+  --main-white: #faf9f6;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* Reset some default browser styles */
+body,
+h1,
+h2,
+h3,
+p,
+ul,
+li {
+  margin: 0;
+  padding: 0;
+}
+
+/* Set a background color for the entire page */
+body {
+  font-family: "Inter";
+  text-align: center;
+  overflow-y: hidden;
+}
+
+/* Set a container for your content */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Style links */
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Style paragraphs */
+p {
+  line-height: 1.6;
+  color: var(--text-color);
+}
+
+button {
+  border: none;
+  box-shadow: none;
+  background-color: var(--main-blue);
+  color: white;
+}
+
+/* Add some spacing and borders */
+hr {
+  margin: 20px 0;
+  border: 1px solid #ddd;
+}
+
+/* Style the footer */
+footer {
+  background-color: var(--main-background);
+  color: var(--text-color);
+  text-align: center;
+  padding: 10px 0;
 }
