@@ -5,18 +5,36 @@ from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.core import serializers
+from django.views.decorators.csrf import csrf_exempt
 
 from .forms import CustomUserCreationForm
 from .models import *
-
+@csrf_exempt
 def register(request):
+    print(request.method)
     if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
+        try:
+            # Parse the JSON data from the request body
+            data = json.loads(request.body)
+
+            # Extract username, password, and email from the JSON data
+            username = data["username"]
+            password = data["password"]
+            email = data["email"]
+
+            # Create a form with the extracted data
+            form = CustomUserCreationForm(data={'username': username, 'password': password, 'email': email})
+
+            if form.is_valid():
+                user = form.save()
+                login(request, user)
+                return JsonResponse({'message': 'User registered and logged in successfully'})
+            else:
+                return JsonResponse({'error': 'Invalid form data'}, status=400)
+        except json.JSONDecodeError as e:
+            return JsonResponse({'error': 'Invalid JSON data'}, status=400)
     else:
-        form = CustomUserCreationForm()
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 def create_game_view(request):
     # Create a new game object
