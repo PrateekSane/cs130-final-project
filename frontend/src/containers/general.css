@@ -24,7 +24,15 @@ nav .right-contents .login-button {
   padding: 5px 10px;
   border-radius: 5px;
 }
+nav .right-contents .register-button {
+  background-color: var(--main-blue);
+  padding: 5px 10px;
+  border-radius: 5px;
+}
 nav .right-contents .login-button a {
+  color: white;
+}
+nav .right-contents .register-button a {
   color: white;
 }
 nav a {

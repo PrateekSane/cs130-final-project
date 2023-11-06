@@ -14,6 +14,9 @@ const Navbar = () => {
           </li>
         </ul>
         <ul className="right-contents">
+          <li className="register-button">
+            <Link to="/signup">Register</Link>
+          </li>
           <li className="login-button">
             <Link to="/login">Log In</Link>
           </li>
