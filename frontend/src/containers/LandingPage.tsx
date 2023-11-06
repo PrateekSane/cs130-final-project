@@ -1,6 +1,6 @@
 const LandingPage = () => {
   return (
-    <>
+    <div className="scrollable">
       <div className="title-container">
         <div className="title-contents">
           <h1>Unlock Your Trading Intution...</h1>
@@ -21,7 +21,8 @@ const LandingPage = () => {
         </div>
         <div className="info-contents">
           <h2>Test (icon)</h2>
-          <p>Test new strategies in a real market environment</p>
+          <p>Test new strategies in a real market environment
+          </p>
         </div>
 
         <div className="info-contents">
@@ -32,7 +33,7 @@ const LandingPage = () => {
           </p>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

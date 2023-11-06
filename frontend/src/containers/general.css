@@ -47,6 +47,11 @@ nav .left-contents i {
   padding: 0 1vw;
 }
 
+.scrollable {
+  height: 100vh;
+  overflow-y: scroll;
+}
+
 .title-container {
   background: linear-gradient(
     180deg,
@@ -75,11 +80,15 @@ nav .left-contents i {
 }
 
 .info-container {
+  height: max-content;
+  background: rgba(184, 226, 251, 0.2);
   display: flex;
   justify-content: space-between;
 }
 
 .info-contents {
+  height: max-content;
   font-size: 1.75rem;
   padding: 50px;
+  margin-bottom: 50px;
 }
