@@ -1,0 +1,11 @@
+# .gitignore
+
+# Python-specific ignores
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment-specific files
+.env
+.env.*
