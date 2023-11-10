@@ -47,18 +47,26 @@ class PolygonData():
         return ticker_data
     
 
-"""
+
 
 
 class Yahoo():
-    def __init__(self, tickers, interval):
+    def __init__(self, tickers, interval,duration = 24*60*60):
         self.tickers = tickers
         self.interval = interval
         self.data = pd.DataFrame(columns=['Ticker', 'Live Price', 'Timestamp'])
+        self.max_duration = duration
 
+
+    
+    
     def fetch_live_ticker(self,ticker):
+        """
+        Fetch live stock data for provided ticker. 
+        """
         return si.get_live_price(ticker)
-        
+    
+    """
     def fetch_live_prices(self):
         while True:
             for ticker in self.tickers:
@@ -67,4 +75,4 @@ class Yahoo():
                 self.data = self.data.append({'Ticker': ticker, 'Live Price': live_price, 'Timestamp': timestamp}, ignore_index=True)
             time.sleep(self.interval)
 
-"""
+    """
