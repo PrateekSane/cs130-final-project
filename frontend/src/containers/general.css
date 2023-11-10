@@ -24,7 +24,15 @@ nav .right-contents .login-button {
   padding: 5px 10px;
   border-radius: 5px;
 }
+nav .right-contents .register-button {
+  background-color: var(--main-blue);
+  padding: 5px 10px;
+  border-radius: 5px;
+}
 nav .right-contents .login-button a {
+  color: white;
+}
+nav .right-contents .register-button a {
   color: white;
 }
 nav a {
@@ -37,6 +45,11 @@ nav a {
 nav .left-contents i {
   font-size: 40px;
   padding: 0 1vw;
+}
+
+.scrollable {
+  height: 100vh;
+  overflow-y: scroll;
 }
 
 .title-container {
@@ -67,11 +80,15 @@ nav .left-contents i {
 }
 
 .info-container {
+  height: max-content;
+  background: rgba(184, 226, 251, 0.2);
   display: flex;
   justify-content: space-between;
 }
 
 .info-contents {
+  height: max-content;
   font-size: 1.75rem;
   padding: 50px;
+  margin-bottom: 50px;
 }
