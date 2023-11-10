@@ -83,10 +83,14 @@ DATABASES = {
 '''
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'djongo',
-        'NAME': 'cs130-db',
-    }
+        'default': {
+            'ENGINE': 'djongo',
+            'NAME': 'cs130-db',
+            'ENFORCE_SCHEMA': False,
+            'CLIENT': {
+                'host': 'mongodb+srv://jamesg6197:cs130group@cluster0.vxqrgxb.mongodb.net/?retryWrites=true&w=majority'
+            }  
+        }
 }
 
 # Password validation

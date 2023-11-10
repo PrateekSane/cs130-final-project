@@ -1,6 +1,7 @@
 # myapp/views.py
 import json
 
+from datetime import datetime, timedelta
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
@@ -40,7 +41,13 @@ def create_game_view(request):
     # Create a new game object
     try:
         # Create a new game object
-        new_game = Game(start_time='2023-10-27 14:00:00', end_time='2023-10-27 16:30:00')
+        current_time = datetime.now()
+
+        # Calculate the end time as 60 minutes from the start time
+        end_time = current_time + timedelta(minutes=60)
+
+        # Create a new game object with the current time and end time
+        new_game = Game(start_time=current_time, end_time=end_time)
 
         # Save the game object to the database
         new_game.save()
