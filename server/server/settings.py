@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import dotenv_values
+
+config = dotenv_values(".env")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -88,7 +91,7 @@ DATABASES = {
             'NAME': 'cs130-db',
             'ENFORCE_SCHEMA': False,
             'CLIENT': {
-                'host': 'mongodb+srv://jamesg6197:cs130group@cluster0.vxqrgxb.mongodb.net/?retryWrites=true&w=majority'
+                'host': config["DATABASE_URI"]
             }  
         }
 }
