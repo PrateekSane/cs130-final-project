@@ -12,6 +12,9 @@ const Navbar = () => {
           <li>
             <Link to="/stocks">Stocks</Link>
           </li>
+          <li>
+            <Link to="/scoreboard">Scoreboard</Link>
+          </li>
         </ul>
         <ul className="right-contents">
           <li className="register-button">
