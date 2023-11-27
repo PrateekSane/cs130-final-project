@@ -2,7 +2,7 @@
 nav {
   display: flex;
   justify-content: space-between;
-  padding: 0.75rem;
+  padding-top: 0.5rem;
 }
 
 nav ul {
@@ -61,7 +61,7 @@ nav .left-contents i {
     rgba(225, 193, 229, 0.2) 73.17%,
     rgba(189, 175, 227, 0.2) 100%
   );
-  padding: 5rem 0;
+  padding: 3rem 0;
 }
 
 .title-contents {

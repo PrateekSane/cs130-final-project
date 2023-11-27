@@ -6,6 +6,7 @@ import { SignupFormValues } from "./interfaces";
 const SignupPage = () => {
   const [signupData, setSignupData] = useState<SignupFormValues>({
     email: "",
+    username: "",
     firstName: "",
     lastName: "",
     password: "",
@@ -31,7 +32,7 @@ const SignupPage = () => {
 
   return (
     <Form
-      style={{ display: "block", width: "35%", margin: "0 auto" }}
+      style={{ display: "block", width: "45%", margin: "0 auto" }}
       onSubmit={onSubmit}
     >
       <h1>Sign Up here!</h1>
@@ -44,7 +45,16 @@ const SignupPage = () => {
           onChange={handleChange}
         />
       </Form.Group>
-      <Form.Group className="mb-3" controlId="formBasicEmail">
+      <Form.Group className="mb-3">
+        <Form.Label>Username: </Form.Label>
+        <Form.Control
+          type="text"
+          name="username"
+          onChange={handleChange}
+          placeholder="Bruin Number 1"
+        />
+      </Form.Group>
+      <Form.Group className="mb-3">
         <Form.Label>First Name: </Form.Label>
         <Form.Control
           type="text"
@@ -53,7 +63,7 @@ const SignupPage = () => {
           placeholder="Joe"
         />
       </Form.Group>
-      <Form.Group className="mb-3" controlId="formBasicEmail">
+      <Form.Group className="mb-3">
         <Form.Label>Last Name: </Form.Label>
         <Form.Control
           type="text"
@@ -62,7 +72,7 @@ const SignupPage = () => {
           placeholder="Bruin"
         />
       </Form.Group>
-      <Form.Group className="mb-3" controlId="formBasicEmail">
+      <Form.Group className="mb-3">
         <Form.Label>Password: </Form.Label>
         <Form.Control
           type="password"
