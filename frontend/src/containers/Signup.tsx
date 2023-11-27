@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import { useNavigate } from "react-router-dom";
 import fetchData from "./Api";
 import { SignupFormValues } from "./interfaces";
 
@@ -21,8 +22,12 @@ const SignupPage = () => {
     }));
   };
 
+  const nav = useNavigate();
+
   const onSubmit = (e: React.ChangeEvent<HTMLFormElement>): void => {
-    console.log('signup', signupData);
+    e.preventDefault();
+
+    console.log("signup", signupData);
     const registerEndpoint = "register/";
     const data = {
       username: signupData.username,
@@ -35,8 +40,9 @@ const SignupPage = () => {
     const res = fetchData(registerEndpoint, "POST", data);
     if (res == null) {
       console.log("unable to register");
+    } else {
+      nav("/");
     }
-    e.preventDefault();
   };
 
   return (
