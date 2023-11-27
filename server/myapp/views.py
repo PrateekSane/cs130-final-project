@@ -19,12 +19,17 @@ def register(request):
             data = json.loads(request.body)
 
             # Extract username, password, and email from the JSON data
-            username = data["username"]
-            password = data["password"]
+            username = data['username']
             email = data["email"]
-
+            password = data["password"]
+            first_name = data['first_name']
+            last_name = data['last_name']
             # Create a form with the extracted data
-            form = CustomUserCreationForm(data={'username': username, 'password': password, 'email': email})
+            form = CustomUserCreationForm(data={'username': username,
+                                                'password': password, 
+                                                'email': email, 
+                                                'first_name': first_name, 
+                                                'last_name': last_name})
 
             if form.is_valid():
                 user = form.save()
