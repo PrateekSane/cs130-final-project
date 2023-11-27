@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import fetchData from "./Api";
 import { SignupFormValues } from "./interfaces";
 
 const SignupPage = () => {
@@ -21,13 +22,21 @@ const SignupPage = () => {
   };
 
   const onSubmit = (e: React.ChangeEvent<HTMLFormElement>): void => {
-    console.log("singup here");
-    console.log(signupData);
+    console.log('signup', signupData);
+    const registerEndpoint = "register/";
+    const data = {
+      username: signupData.username,
+      password: signupData.password,
+      email: signupData.email,
+      first_name: signupData.firstName,
+      last_name: signupData.lastName,
+    };
+
+    const res = fetchData(registerEndpoint, "POST", data);
+    if (res == null) {
+      console.log("unable to register");
+    }
     e.preventDefault();
-    /*
-        if (!auth) return;
-        console.log('enter')
-        */
   };
 
   return (
