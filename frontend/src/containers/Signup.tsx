@@ -6,13 +6,13 @@ import fetchData from "./Api";
 import { SignupFormValues } from "./interfaces";
 
 const SignupPage = () => {
-  const [signupData, setSignupData] = useState<SignupFormValues>({
-    email: "",
-    username: "",
-    firstName: "",
-    lastName: "",
-    password: "",
-  });
+    const [signupData, setSignupData] = useState<SignupFormValues>({
+        email: '',
+        firstName: '',
+        lastName: '',
+        username: '',
+        password: '',
+    });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
@@ -23,12 +23,37 @@ const SignupPage = () => {
   };
 
   const nav = useNavigate();
+//   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+//     e.preventDefault();
 
-  const onSubmit = (e: React.ChangeEvent<HTMLFormElement>): void => {
+//     try {
+//         // Make a POST request to the user registration endpoint
+//         const response = await fetch('http://127.0.0.1:8000/register/', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             },
+//             body: JSON.stringify(signupData),
+//         });
+
+//         if (response.ok) {
+//             console.log('User registered successfully!');
+//             // Optionally, you can redirect the user to a different page or perform other actions.
+//         } else {
+//             const errorData = await response.json();
+//             console.error('User registration failed:', errorData.error);
+//             // Handle the error (display a message to the user, etc.)
+//         }
+//     } catch (error) {
+//         console.error('An unexpected error occurred:', error);
+//         // Handle unexpected errors
+//     }
+// }
+  const onSubmit = async (e: React.ChangeEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
 
     console.log("signup", signupData);
-    const registerEndpoint = "register/";
+    const registerEndpoint = 'http://127.0.0.1:8000/register/';
     const data = {
       username: signupData.username,
       password: signupData.password,
@@ -37,11 +62,27 @@ const SignupPage = () => {
       last_name: signupData.lastName,
     };
 
-    const res = fetchData(registerEndpoint, "POST", data);
-    if (res == null) {
-      console.log("unable to register");
-    } else {
-      nav("/");
+    try {
+        // Make a POST request to the user registration endpoint
+        const response = await fetch(registerEndpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+            console.log('User registered successfully!');
+            // Optionally, you can redirect the user to a different page or perform other actions.
+        } else {
+            const errorData = await response.json();
+            console.error('User registration failed:', errorData.error);
+            // Handle the error (display a message to the user, etc.)
+        }
+    } catch (error) {
+        console.error('An unexpected error occurred:', error);
+        // Handle unexpected errors
     }
   };
 
@@ -102,5 +143,7 @@ const SignupPage = () => {
     </Form>
   );
 };
+    
+
 
 export default SignupPage;

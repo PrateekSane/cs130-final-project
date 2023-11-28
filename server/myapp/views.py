@@ -12,7 +12,6 @@ from .forms import CustomUserCreationForm
 from .models import *
 @csrf_exempt
 def register(request):
-    print(request.method)
     if request.method == 'POST':
         try:
             # Parse the JSON data from the request body
@@ -21,9 +20,14 @@ def register(request):
             # Extract username, password, and email from the JSON data
             username = data['username']
             email = data["email"]
+<<<<<<< HEAD
             password = data["password"]
             first_name = data['first_name']
             last_name = data['last_name']
+=======
+            print(email, username, password)
+            
+>>>>>>> 462182b (stuff)
             # Create a form with the extracted data
             form = CustomUserCreationForm(data={'username': username,
                                                 'password': password, 
@@ -70,7 +74,6 @@ def create_game_view(request):
         return JsonResponse({'error': str(e)}, status=500)
 
     
-
 def join_game(request, game_id):
     try:
         game = Game.objects.get(pk=game_id)
@@ -90,4 +93,16 @@ def join_game(request, game_id):
         return JsonResponse(payload_data)
     except Game.DoesNotExist:
         return JsonResponse({'error': 'Game not found'}, status=404)
+    
+# def get_all_games_for_users(request):
+#     try:
+#         data = json.loads(request.body)
+
+#         # Extract username, password, and email from the JSON data
+#         username = data["username"]
+#         games = Game.objects.get(fk = )
+
+#     except:
+#         return JsonResponse({'error': 'Game not found'}, status=404)
+
 

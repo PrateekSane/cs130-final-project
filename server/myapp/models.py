@@ -3,17 +3,21 @@ from django.contrib.auth.models import AbstractUser
 
 class CustomUser(AbstractUser):
     # Add custom fields here
+    user_id = models.CharField(max_length=50, unique=True)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
     # Add more fields as needed
 
     def __str__(self):
         return self.username
     
+    
 class Game(models.Model):
     game_id = models.AutoField(primary_key=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField(null=True, blank=True)
     starting_balance = models.FloatField()
+
+    players = models.ManyToManyField(CustomUser, related_name='games_played')
 
 class PlayerProfile(models.Model):
     player_profile_id = models.AutoField(primary_key=True)

@@ -4,11 +4,19 @@ export interface LoginFormValues {
 }
 
 export interface SignupFormValues {
+<<<<<<< HEAD
   email: string;
   username: string;
   firstName: string;
   lastName: string;
   password: string;
+=======
+    email: string,
+    username: string,
+    firstName: string
+    lastName: string,
+    password: string,
+>>>>>>> 462182b (stuff)
 }
 
 export type AuthContextValue = {
