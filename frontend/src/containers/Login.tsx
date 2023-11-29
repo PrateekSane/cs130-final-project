@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import fetchData from "./Api";
 //import { useAuth } from "../Auth/AuthProvider";
 import { LoginFormValues } from "./interfaces";
 
 const LoginPage = () => {
   //const auth = useAuth();
   const [loginData, setLoginData] = useState<LoginFormValues>({
-    email: "",
-    password: "",
+    username: "bruin23",
+    password: "pass",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -19,18 +20,18 @@ const LoginPage = () => {
     }));
   };
 
-  const onSubmit = (e: React.ChangeEvent<HTMLFormElement>): void => {
+  const onSubmit = async (
+    e: React.ChangeEvent<HTMLFormElement>
+  ): Promise<void> => {
     console.log("login here");
     console.log(loginData);
     e.preventDefault();
-    /*
-        if (!auth) return;
-        console.log('enter')
-        auth.login({ name: 'jim', firstName: 'jim', lastName: 'jim' })
-        
-
-
-        */
+    try {
+      const res = await fetchData("login/", "POST", loginData, true);
+      console.log(res);
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -41,11 +42,11 @@ const LoginPage = () => {
       >
         <h1>Log in here!</h1>
         <Form.Group className="mb-3">
-          <Form.Label>Email </Form.Label>
+          <Form.Label>Username </Form.Label>
           <Form.Control
             type="text"
-            name="email"
-            placeholder="bruin@ucla.edu"
+            name="username"
+            placeholder="joe bru"
             onChange={handleChange}
           />
         </Form.Group>

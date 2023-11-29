@@ -24,7 +24,7 @@ const SignupPage = () => {
 
   const nav = useNavigate();
 
-  const onSubmit = (e: React.ChangeEvent<HTMLFormElement>): void => {
+  const onSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     console.log("signup", signupData);
@@ -37,11 +37,11 @@ const SignupPage = () => {
       last_name: signupData.lastName,
     };
 
-    const res = fetchData(registerEndpoint, "POST", data);
-    if (res == null) {
-      console.log("unable to register");
-    } else {
+    const res = await fetchData(registerEndpoint, "POST", data);
+    if (res && res.status === 200) {
       nav("/login");
+    } else {
+      console.log("unable to register");
     }
   };
 
