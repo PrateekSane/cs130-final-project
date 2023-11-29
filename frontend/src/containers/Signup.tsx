@@ -41,7 +41,7 @@ const SignupPage = () => {
     if (res == null) {
       console.log("unable to register");
     } else {
-      nav("/");
+      nav("/login");
     }
   };
 
