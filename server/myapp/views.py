@@ -10,6 +10,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .forms import CustomUserCreationForm
 from .models import *
+from .backends import EmailBackend
+
 @csrf_exempt
 def register(request):
     if request.method == 'POST':
@@ -36,6 +38,34 @@ def register(request):
                 return JsonResponse({'message': 'User registered and logged in successfully'})
             else:
                 return JsonResponse({'error': 'Invalid form data'}, status=400)
+        except json.JSONDecodeError as e:
+            return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+@csrf_exempt
+def login(request):
+    if request.method == 'POST':
+        try:
+            # Parse the JSON data from the request body
+            data = json.loads(request.body)
+
+            # Extract email and password from the JSON data
+            email = data["email"]
+            password = data["password"]
+            
+            email_backend = EmailBackend()
+            # Authenticate the user
+            user = email_backend.authenticate(request, email=email, password=password)
+
+            if user is not None:
+                # User is authenticated, log them in
+                login(request, user)
+                return JsonResponse({'message': 'User logged in successfully'})
+            else:
+                # Authentication failed
+                return JsonResponse({'error': 'Invalid credentials'}, status=401)
+
         except json.JSONDecodeError as e:
             return JsonResponse({'error': 'Invalid JSON data'}, status=400)
     else:
