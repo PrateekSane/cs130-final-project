@@ -8,68 +8,85 @@ from django.http import JsonResponse
 from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 
-from .forms import CustomUserCreationForm
-from .models import *
-from .backends import EmailBackend
+from ..forms import CustomUserCreationForm
+from ..models import *
+from ..backends import EmailBackend
 
-@csrf_exempt
-def register(request):
-    if request.method == 'POST':
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import AllowAny, IsAuthenticated
+
+from django.contrib.auth import login # Import your custom form
+from django.db import DatabaseError
+
+class RegisterView(APIView):
+    permission_classes = [AllowAny]
+    def post(self, request, format=None):
         try:
-            # Parse the JSON data from the request body
-            data = json.loads(request.body)
+            data = request.data
 
-            # Extract username, password, and email from the JSON data
-            username = data['username']
-            email = data["email"]
-            password = data["password"]
-            first_name = data['first_name']
-            last_name = data['last_name']
-            # Create a form with the extracted data
-            form = CustomUserCreationForm(data={'username': username,
-                                                'password': password, 
-                                                'email': email, 
-                                                'first_name': first_name, 
-                                                'last_name': last_name})
+            username = data.get('username')
+            email = data.get("email")
+            password = data.get("password")
+            first_name = data.get('first_name')
+            last_name = data.get('last_name')
+
+            form = CustomUserCreationForm({
+                'username': username,
+                'password': password,
+                'email': email,
+                'first_name': first_name,
+                'last_name': last_name
+            })
 
             if form.is_valid():
-                user = form.save()
-                login(request, user)
-                return JsonResponse({'message': 'User registered and logged in successfully'})
+                user = form.save(commit=False)
+                user.set_password(password)
+                user.save()
+                token = RefreshToken.for_user(user)
+                return Response({'message': 'User registered and logged in successfully', "access":str(token.access_token)})
             else:
-                return JsonResponse({'error': 'Invalid form data'}, status=400)
-        except json.JSONDecodeError as e:
-            return JsonResponse({'error': 'Invalid JSON data'}, status=400)
-    else:
-        return JsonResponse({'error': 'Invalid request method'}, status=405)
+                return Response({'error': 'Invalid form data'}, status=status.HTTP_400_BAD_REQUEST)
 
-@csrf_exempt
-def login(request):
-    if request.method == 'POST':
+        except DatabaseError:
+            return Response({'error': "Duplicate Email/Username already exists"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class LoginView(APIView):
+    permission_classes = [AllowAny]
+    def post(self, request, *args, **kwargs):
         try:
-            # Parse the JSON data from the request body
             data = json.loads(request.body)
 
-            # Extract email and password from the JSON data
+                # Extract email and password from the JSON data
             email = data["email"]
             password = data["password"]
-            
             email_backend = EmailBackend()
-            # Authenticate the user
-            user = email_backend.authenticate(request, email=email, password=password)
-
+                # Authenticate the user
+            user = email_backend.authenticate(email=email, password=password)
             if user is not None:
-                # User is authenticated, log them in
-                login(request, user)
-                return JsonResponse({'message': 'User logged in successfully'})
+                token = RefreshToken.for_user(user)
+                return Response({"access": str(token.access_token), "refresh": str(token)})
             else:
-                # Authentication failed
-                return JsonResponse({'error': 'Invalid credentials'}, status=401)
-
+                return Response({"error": "Invalid login credentials"})
         except json.JSONDecodeError as e:
             return JsonResponse({'error': 'Invalid JSON data'}, status=400)
-    else:
-        return JsonResponse({'error': 'Invalid request method'}, status=405)
+        
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated,]
+    def post(self, request):
+        try:
+            refresh_token = request.data["refresh"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+
+            return Response(status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
 def create_game_view(request):
     # Create a new game object

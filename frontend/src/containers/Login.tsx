@@ -3,9 +3,11 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 //import { useAuth } from "../Auth/AuthProvider";
 import { LoginFormValues } from "./interfaces";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   //const auth = useAuth();
+  const nav = useNavigate();
   const [loginData, setLoginData] = useState<LoginFormValues>({
     email: "",
     password: "",
@@ -19,19 +21,38 @@ const LoginPage = () => {
     }));
   };
 
-  const onSubmit = (e: React.ChangeEvent<HTMLFormElement>): void => {
+  const onSubmit = async (e: React.ChangeEvent<HTMLFormElement>): Promise<void>=> {
     console.log("login here");
     console.log(loginData);
     e.preventDefault();
-    /*
-        if (!auth) return;
-        console.log('enter')
-        auth.login({ name: 'jim', firstName: 'jim', lastName: 'jim' })
-        
 
+    const loginEndpoint = 'http://127.0.0.1:8000/login/';
+    const data = {
+      email: loginData.email,
+      password: loginData.password,
+    };
+        // Make a POST request to the user registration endpoint
+      await fetch(loginEndpoint, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+      }).then(response => response.json())
+      .then(result => {
+        if (result.access){
+          localStorage.setItem('authtoken', result.access);
+          nav("/");
+        } else {
+          console.log("Invalid Credentials");
+        }
 
-        */
+      })
+      .catch((error) => console.error('An unexpected error occurred:', error));
   };
+
+
+    
 
   return (
     <>

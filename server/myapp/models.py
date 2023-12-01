@@ -1,10 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+import uuid
 
 class CustomUser(AbstractUser):
     # Add custom fields here
-    user_id = models.CharField(max_length=50, unique=True)
+    user_id = models.CharField(max_length=50, unique=True, default=uuid.uuid4())
     phone_number = models.CharField(max_length=15, blank=True, null=True)
+    email = models.EmailField(unique = True, null = True)
     # Add more fields as needed
 
     def __str__(self):
