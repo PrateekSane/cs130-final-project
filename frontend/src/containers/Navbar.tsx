@@ -1,16 +1,17 @@
 import { Link, Outlet } from "react-router-dom";
-import {useEffect, useState} from "react";
+import {useEffect, useState, useContext} from "react";
+import AuthContext from "./AuthContext";
 import "./general.css";
 
 const Navbar = () => {
 
-  const [isAuth, setIsAuth] = useState(false);
-   useEffect(() => {
-    console.log("hello");
-     if (localStorage.getItem('authtoken') !== null) {
-        setIsAuth(true); 
-      }
-    }, [isAuth]);
+
+  let authContext = useContext(AuthContext);
+  if (!authContext) {
+    // Handle the case when AuthContext is not available
+    return <div>Auth context is not available</div>;
+  }
+  let {user, logoutUser} = authContext;
   
   return (
     <>
@@ -28,10 +29,10 @@ const Navbar = () => {
         </ul>
         <ul className="right-contents">
 
-          {isAuth ? (
-            <li className="logout-button">
-              <Link to="/logout">Logout</Link>
-            </li>
+          {user ? (
+            <li className = "logout-button">
+              <button onClick={(e:any) => logoutUser(e)}>Logout</button>
+              </li>
           ) : (
             <>
               <li className="register-button">

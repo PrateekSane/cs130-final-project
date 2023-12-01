@@ -1,17 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useContext, FormEvent } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 //import { useAuth } from "../Auth/AuthProvider";
 import { LoginFormValues } from "./interfaces";
 import { useNavigate } from "react-router-dom";
+import AuthContext from "./AuthContext";
 
 const LoginPage = () => {
   //const auth = useAuth();
   const nav = useNavigate();
+  
+
+  
   const [loginData, setLoginData] = useState<LoginFormValues>({
     email: "",
     password: "",
   });
+  const authContext = useContext(AuthContext);
+
+  if (!authContext) {
+    // Handle the case when AuthContext is not available
+    return <div>Auth context is not available</div>;
+  }
+  const {loginUser} = authContext;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
@@ -20,45 +31,21 @@ const LoginPage = () => {
       [name]: value,
     }));
   };
-
-  const onSubmit = async (e: React.ChangeEvent<HTMLFormElement>): Promise<void>=> {
-    console.log("login here");
-    console.log(loginData);
-    e.preventDefault();
-
-    const loginEndpoint = 'http://127.0.0.1:8000/login/';
-    const data = {
-      email: loginData.email,
-      password: loginData.password,
-    };
-        // Make a POST request to the user registration endpoint
-      await fetch(loginEndpoint, {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-      }).then(response => response.json())
-      .then(result => {
-        if (result.access){
-          localStorage.setItem('authtoken', result.access);
-          nav("/");
-        } else {
-          console.log("Invalid Credentials");
-        }
-
-      })
-      .catch((error) => console.error('An unexpected error occurred:', error));
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    try {
+      await loginUser(e);
+      // Handle successful login
+    } catch (error) {
+      // Handle login error
+      console.error('Login failed', error);
+    }
   };
-
-
-    
 
   return (
     <>
       <Form
         style={{ display: "block", width: "35%", margin: "0 auto" }}
-        onSubmit={onSubmit}
+        onSubmit={handleSubmit}
       >
         <h1>Log in here!</h1>
         <Form.Group className="mb-3">

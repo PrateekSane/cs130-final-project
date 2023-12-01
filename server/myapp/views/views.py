@@ -62,8 +62,10 @@ class LoginView(APIView):
             data = json.loads(request.body)
 
                 # Extract email and password from the JSON data
+            print(data)
             email = data["email"]
             password = data["password"]
+            print(email, password)
             email_backend = EmailBackend()
                 # Authenticate the user
             user = email_backend.authenticate(email=email, password=password)

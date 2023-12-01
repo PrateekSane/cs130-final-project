@@ -7,22 +7,23 @@ import Navbar from "./containers/Navbar";
 import Scoreboard from "./containers/Scoreboard";
 import SignupPage from "./containers/Signup";
 import Stock from "./containers/Stock";
-import Logout from "./containers/Logout";
+import { AuthProvider } from "./containers/AuthContext";
 function App() {
   return (
     <div className="App">
       <Router>
+        <AuthProvider>
         <div className="App">
           <Navbar />
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/logout" element={<Logout />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/stocks" element={<Stock />} />
             <Route path="/scoreboard" element={<Scoreboard />} />
           </Routes>
         </div>
+        </AuthProvider>
       </Router>
     </div>
   );
