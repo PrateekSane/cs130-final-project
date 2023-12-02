@@ -1,15 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useContext, FormEvent } from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 //import { useAuth } from "../Auth/AuthProvider";
 import { LoginFormValues } from "./interfaces";
+import { useNavigate } from "react-router-dom";
+import AuthContext from "./AuthContext";
 
 const LoginPage = () => {
   //const auth = useAuth();
+  const nav = useNavigate();
+  
+
+  
   const [loginData, setLoginData] = useState<LoginFormValues>({
     email: "",
     password: "",
   });
+  const authContext = useContext(AuthContext);
+
+  if (!authContext) {
+    // Handle the case when AuthContext is not available
+    return <div>Auth context is not available</div>;
+  }
+  const {loginUser} = authContext;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
@@ -18,26 +31,22 @@ const LoginPage = () => {
       [name]: value,
     }));
   };
-
-  const onSubmit = (e: React.ChangeEvent<HTMLFormElement>): void => {
-    console.log("login here");
-    console.log(loginData);
-    e.preventDefault();
-    /*
-        if (!auth) return;
-        console.log('enter')
-        auth.login({ name: 'jim', firstName: 'jim', lastName: 'jim' })
-        
-
-
-        */
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    try {
+      const formData = new FormData(e.currentTarget);
+      await loginUser(e, formData);
+      // Handle successful login
+    } catch (error) {
+      // Handle login error
+      console.error('Login failed', error);
+    }
   };
 
   return (
     <>
       <Form
         style={{ display: "block", width: "35%", margin: "0 auto" }}
-        onSubmit={onSubmit}
+        onSubmit={handleSubmit}
       >
         <h1>Log in here!</h1>
         <Form.Group className="mb-3">

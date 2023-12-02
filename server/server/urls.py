@@ -16,16 +16,24 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from myapp import views
+from myapp.views.views import LoginView, LogoutView, RegisterView, create_game_view, join_game
 
 from django.contrib.auth import views as auth_views
+
+from rest_framework_simplejwt import views as jwt_views
 
 urlpatterns = [
     
     #path('admin/', admin.site.urls),
-    path('register/', views.register, name='register'),
-    path('login/', auth_views.LoginView.as_view(), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-    path('create_game/', views.create_game_view, name='create_game'),
-    path('join_game/<int:game_id>/', views.join_game, name = 'join_game'),
+    path('register/', RegisterView.as_view(), name='auth_register'),
+    path('login/', LoginView.as_view(), name='auth_login'),
+    path('logout/', LogoutView.as_view(), name='auth_logout'),
+    path('create_game/', create_game_view, name='create_game'),
+    path('join_game/<int:game_id>/', join_game, name = 'join_game'),
+    path('token/', 
+          jwt_views.TokenObtainPairView.as_view(), 
+          name ='token_obtain_pair'),
+     path('token/refresh/', 
+          jwt_views.TokenRefreshView.as_view(), 
+          name ='token_refresh')
 ]

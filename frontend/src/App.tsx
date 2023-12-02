@@ -7,11 +7,12 @@ import Navbar from "./containers/Navbar";
 import Scoreboard from "./containers/Scoreboard";
 import SignupPage from "./containers/Signup";
 import Stock from "./containers/Stock";
-
+import { AuthProvider } from "./containers/AuthContext";
 function App() {
   return (
     <div className="App">
       <Router>
+        <AuthProvider>
         <div className="App">
           <Navbar />
           <Routes>
@@ -22,6 +23,7 @@ function App() {
             <Route path="/scoreboard" element={<Scoreboard />} />
           </Routes>
         </div>
+        </AuthProvider>
       </Router>
     </div>
   );
