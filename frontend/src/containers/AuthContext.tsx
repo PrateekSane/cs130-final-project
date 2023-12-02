@@ -15,8 +15,8 @@ type User = {
 
 interface AuthContextType {
   user: User | null;
-  authTokens: AuthToken | null;
-  loginUser: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+  authToken: AuthToken | null;
+  loginUser: (e: React.FormEvent<HTMLFormElement>, formData: FormData) => Promise<void>;
   logoutUser: (e: React.FormEvent<HTMLFormElement>) => Promise<void>
 }
 
@@ -31,7 +31,7 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
   });
 
   const [authToken, setAuthToken] = useState<AuthToken | null>(() => {
-    const tokens = localStorage.getItem('authTokens');
+    const tokens = localStorage.getItem('authtoken');
     return tokens ? JSON.parse(tokens) : null;
   });
 
@@ -39,9 +39,8 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
 
   const navigate = useNavigate();
 
-  const loginUser = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+  const loginUser = async (e: React.FormEvent<HTMLFormElement>, formData: FormData): Promise<void> => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
     console.log(email);
@@ -117,7 +116,7 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
 
   let contextData: AuthContextType = {
     user: user,
-    authTokens: authToken,
+    authToken: authToken,
     loginUser: loginUser,
     logoutUser: logoutUser,
   };

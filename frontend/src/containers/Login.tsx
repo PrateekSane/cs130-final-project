@@ -33,7 +33,8 @@ const LoginPage = () => {
   };
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     try {
-      await loginUser(e);
+      const formData = new FormData(e.currentTarget);
+      await loginUser(e, formData);
       // Handle successful login
     } catch (error) {
       // Handle login error

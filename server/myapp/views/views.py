@@ -1,5 +1,6 @@
 # myapp/views.py
 import json
+import uuid
 
 from datetime import datetime, timedelta
 from django.contrib.auth import login, authenticate
@@ -33,13 +34,15 @@ class RegisterView(APIView):
             password = data.get("password")
             first_name = data.get('first_name')
             last_name = data.get('last_name')
-
+            x= uuid.uuid4()
+            print(x)
             form = CustomUserCreationForm({
                 'username': username,
                 'password': password,
                 'email': email,
                 'first_name': first_name,
-                'last_name': last_name
+                'last_name': last_name,
+                'user_id': x,
             })
 
             if form.is_valid():

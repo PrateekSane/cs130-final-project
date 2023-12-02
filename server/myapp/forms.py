@@ -5,7 +5,7 @@ from .models import CustomUser
 class CustomUserCreationForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ('username', 'email', 'password', 'first_name', 'last_name')
+        fields = ('username', 'email', 'password', 'first_name', 'last_name', 'user_id')
         
     def clean_email(self):
         email = self.cleaned_data.get('email')
