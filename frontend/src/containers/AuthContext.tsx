@@ -27,7 +27,11 @@ export default AuthContext;
 export const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
   const [user, setUser] = useState<User | null>(() => {
     const token = localStorage.getItem('authtoken');
-    return token ? jwtDecode<User>(token) : null;
+    try {
+      return token ? jwtDecode<User>(token) : null;
+    } catch (e) {
+      return null;
+    }
   });
 
   const [authToken, setAuthToken] = useState<AuthToken | null>(() => {
@@ -54,8 +58,13 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
     });
 
     const data = await response.json();
+    console.log(data.error);
 
-    if (data) {
+    if (data.error == "Invalid login credentials") {
+      // TODO: Clear the current form fields 
+      //formData.set('email', '');
+      alert('Invalid username/password');
+    } else if (data) {
       localStorage.setItem('authtoken', JSON.stringify(data));
       setAuthToken(data);
       setUser(jwtDecode<User>(data.access));
