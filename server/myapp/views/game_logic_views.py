@@ -15,7 +15,13 @@ from rest_framework.views import APIView
 
 from backend_api.polygon_api import *
 
-
+duration_map = {
+    "1 hour": timedelta(hours = 1),
+    "1 day": timedelta(days = 1),
+    "1 week": timedelta(weeks = 1),
+    "2 weeks": timedelta(weeks = 2),
+    "1 month": timedelta(weeks = 4),
+}
 
 class CreateGameView(APIView):
     permission_classes = [IsAuthenticated,]
@@ -24,14 +30,24 @@ class CreateGameView(APIView):
         try:
             data = request.data
             username = data.get("username")
+            duration = data.get("duration")
+            starting_balance = data.get("starting_balance", "0")
+            if duration == None:
+                return JsonResponse({'error': 'Please specify a duration'}, status=404)
+            
+            if int(starting_balance) < 100:
+                return JsonResponse({'error': 'Please specify a starting balance of at least 1000 dollars'}, status=404)
 
+            
             current_time = datetime.now()
 
          # Calculate the end time as 60 minutes from the start time
-            end_time = current_time + timedelta(minutes=60)
+
+            
+            end_time = current_time + duration_map[duration]
 
             # Create a new game object with the current time and end time
-            new_game = Game(start_time=current_time, end_time=end_time)
+            new_game = Game(start_time=current_time, end_time=end_time, starting_balance = starting_balance)
             new_game.save()
 
 
@@ -152,6 +168,8 @@ class UserGamesView(APIView):
 
             # Serialize the game data
             games_data = serializers.serialize('json', games)
+            games_data = json.loads(games_data)
+            print(games_data)
 
             # Return the games as a JSON response
             return JsonResponse({'games': games_data})

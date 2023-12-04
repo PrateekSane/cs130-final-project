@@ -20,6 +20,8 @@ interface AuthContextType {
   logoutUser: (e: React.FormEvent<HTMLFormElement>) => Promise<void>
 }
 
+
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export default AuthContext;
