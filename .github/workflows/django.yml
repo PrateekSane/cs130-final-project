@@ -29,5 +29,5 @@ jobs:
       run: | 
         cd server
         touch .env
-        echo DATABASE_URI = 'test' >> .env
+        echo DATABASE_URI = "'test'" >> .env
         python manage.py test
