@@ -11,6 +11,7 @@ import { AuthProvider } from "./containers/AuthContext";
 import UserGames from "./containers/UserGames";
 import CreateGame from "./containers/CreateGame";
 import JoinGame from "./containers/JoinGame";
+import InteractWithHolding from "./containers/InteractWithHolding";
 function App() {
   return (
     <div className="App">
@@ -26,6 +27,7 @@ function App() {
             <Route path="/scoreboard" element={<Scoreboard />} />
             <Route path="/games" element={<UserGames />} />
             <Route path="/create-game" element = {<CreateGame />} />
+            <Route path="/interact-with-holding" element = {<InteractWithHolding />} />
             <Route path="/join-game" element = {<JoinGame />} />
           </Routes>
         </div>
