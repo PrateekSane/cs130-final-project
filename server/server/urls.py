@@ -14,22 +14,21 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
 from django.urls import path
-from myapp.views.views import LoginView, LogoutView, RegisterView, create_game_view, join_game
-
-from django.contrib.auth import views as auth_views
+from myapp.views.auth_views import *
+from myapp.views.game_logic_views import *
 
 from rest_framework_simplejwt import views as jwt_views
 
 urlpatterns = [
-    
-    #path('admin/', admin.site.urls),
     path('register/', RegisterView.as_view(), name='auth_register'),
     path('login/', LoginView.as_view(), name='auth_login'),
     path('logout/', LogoutView.as_view(), name='auth_logout'),
-    path('create_game/', create_game_view, name='create_game'),
-    path('join_game/<int:game_id>/', join_game, name = 'join_game'),
+    path('create-game/', CreateGameView.as_view(), name='create-game'),
+    path('join-game/', JoinGameView.as_view(), name='join-game'),
+    path('game-player-data/', GetGameAndPlayerData.as_view(), name='game-player-data'),
+    path('user-games/', UserGamesView.as_view(), name='user-games'),
+    path('interact-holding/', InteractWithHolding.as_view(), name='interact-holding'),
     path('token/', 
           jwt_views.TokenObtainPairView.as_view(), 
           name ='token_obtain_pair'),

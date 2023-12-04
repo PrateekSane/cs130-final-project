@@ -13,7 +13,7 @@ from django.core import serializers
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 
-from server.backend_api.polygon_api import *
+from backend_api.polygon_api import *
 
 
 
