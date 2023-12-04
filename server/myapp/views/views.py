@@ -93,7 +93,7 @@ class LogoutView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-def create_game_view(request):
+def create_game_view(request, firstPlayer):
     # Create a new game object
     try:
         # Create a new game object
@@ -104,6 +104,9 @@ def create_game_view(request):
 
         # Create a new game object with the current time and end time
         new_game = Game(start_time=current_time, end_time=end_time)
+
+        # Game object should start with the initiating player
+        new_game.players = new_game.players.add(firstPlayer)
 
         # Save the game object to the database
         new_game.save()
@@ -206,7 +209,7 @@ class CreateGameView(APIView):
                 # Authenticate the user
             user = email_backend.authenticate(email=email, password=password)
             if user is not None:
-                create_game_view()
+                create_game_view(firstPlayer=email)
                 print("create_game_view invoked")
             else:
                 return Response({"error": "Invalid login credentials"})
