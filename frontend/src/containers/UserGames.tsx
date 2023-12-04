@@ -84,7 +84,7 @@ const UserGames = () => {
       };
     */
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement & HTMLSelectElement>) : void => {
+    const handleChange = () => {
         console.log("join game field changed");
     };
 
@@ -99,6 +99,23 @@ const UserGames = () => {
             console.error('Login failed', error);
         }
     };
+
+
+    // Need a local variable 
+    // Like const [error, setError] = useState<string | null>(null);
+    
+    const handleAddFriendSubmit = () => {
+        console.log("Submit form");
+    }
+    
+
+    /*
+    function handleAddFriendSubmit(e: KeyboardEvent) {
+        if((e && e.key == 'ENTER')) {
+          alert("The form was submitted");
+        }
+     }
+     */
 
     return (
         <div>
@@ -126,12 +143,25 @@ const UserGames = () => {
             ) : (
                 <ul>
                     {games.map(game => (
-                        <li key={game.game_id}>
-                            <p>Game ID: {game.game_id}</p>
-                            <p>Start Time: {game.start_time}</p>
-                            <p>End Time: {game.end_time}</p>
-                            <p>Starting Balance: {game.starting_balance}</p>
-                        </li>
+                        <div>
+                            <li key={game.game_id}>
+                                <p>Game ID: {game.game_id}</p>
+                                <p>Start Time: {game.start_time}</p>
+                                <p>End Time: {game.end_time}</p>
+                                <p>Starting Balance: {game.starting_balance}</p>
+                            </li>
+                            <Button style={{width:200}} onClick={handleAddFriendSubmit}>
+                                Add Friend to Game
+                            </Button>
+                            <Form.Group style={{ width: 200}} className="mb-3">
+                                <Form.Control
+                                type="text"
+                                name="username"
+                                onChange={handleChange}
+                                placeholder="Friend Username"
+                                />
+                            </Form.Group>
+                        </div>
                     ))}
                 </ul>
             )}
@@ -140,3 +170,16 @@ const UserGames = () => {
 };
 
 export default UserGames;
+
+
+/*
+<form style={{ width: 200}}>
+    <input type="submit" style={{display: 'none'}} onSubmit={handleAddFriendSubmit}/>
+    <Form.Control
+    type="text"
+    name="username"
+    onChange={handleChange}
+    placeholder="Add Friend to Game (Username)"
+    />
+</form>
+*/
