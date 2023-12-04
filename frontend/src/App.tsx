@@ -26,6 +26,7 @@ function App() {
             <Route path="/stocks" element={<Stock />} />
             <Route path="/scoreboard" element={<Scoreboard />} />
             <Route path="/games" element={<UserGames />} />
+            <Route path="/user-games" element={<UserGames />} />
             <Route path="/create-game" element = {<CreateGame />} />
           </Routes>
         </div>
