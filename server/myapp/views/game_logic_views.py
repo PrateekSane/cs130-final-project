@@ -192,7 +192,7 @@ class InteractWithHolding(APIView):
         try:
             data = request.data
             symbol = data.get("symbol")
-            game_id = data.get("game_id")
+            game_id = 35
             shares = int(data.get("shares", 0))
             user = request.user
             current_time = datetime.now()
@@ -208,8 +208,8 @@ class InteractWithHolding(APIView):
                 return JsonResponse({'error': 'Game not found'}, status=404)
 
             # Check if the game is still active
-            if current_time > game.end_time:
-                return JsonResponse({'error': 'Game has already ended'}, status=400)
+            # if current_time > game.end_time:
+            #     return JsonResponse({'error': 'Game has already ended'}, status=400)
 
             # Fetch the player's profile for this game
             try:
