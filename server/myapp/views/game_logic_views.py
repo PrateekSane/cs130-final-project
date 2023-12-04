@@ -89,7 +89,7 @@ class JoinGameView(APIView):
 
             # Fetch the game instance based on the provided ID
             try:
-                game_to_join = Game.objects.get(join_string=game_id)
+                game_to_join = Game.objects.get(game_id=game_id)
                 
 
             except Game.DoesNotExist:
