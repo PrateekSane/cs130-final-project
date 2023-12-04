@@ -31,7 +31,5 @@ jobs:
     - name: Run Tests
       run: | 
         cd server 
-        set -a
-        source .env
-        set +a
+        cat .env
         python manage.py test
