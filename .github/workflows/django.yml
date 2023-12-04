@@ -30,7 +30,7 @@ jobs:
         pip install -r server/requirements.txt
     - name: Run Tests
       run: | 
-        cd server
-        cat .env
-        cd ..
+        set -a
+        source .env
+        set +a
         python server/manage.py test
