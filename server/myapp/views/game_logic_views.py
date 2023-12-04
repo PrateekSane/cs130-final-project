@@ -192,7 +192,7 @@ class InteractWithHolding(APIView):
         try:
             data = request.data
             symbol = data.get("symbol")
-            game_id = 35
+            game_id = int(data.get("game_id"))
             shares = int(data.get("shares", 0))
             user = request.user
             current_time = datetime.now()
@@ -200,13 +200,11 @@ class InteractWithHolding(APIView):
             # Validate the input data
             if not symbol or not game_id or shares <= 0:
                 return JsonResponse({'error': 'Invalid input data'}, status=400)
-
             # Fetch the game instance
             try:
                 game = Game.objects.get(game_id=game_id)
             except Game.DoesNotExist:
                 return JsonResponse({'error': 'Game not found'}, status=404)
-
             # Check if the game is still active
             # if current_time > game.end_time:
             #     return JsonResponse({'error': 'Game has already ended'}, status=400)
@@ -220,7 +218,7 @@ class InteractWithHolding(APIView):
             # Instantiate the Yahoo class to get live price
             yahoo_data = Yahoo(tickers=[symbol], interval=60)  # Adjust the interval as needed
             live_price = yahoo_data.fetch_live_ticker(symbol)
-
+        
             if live_price is None:
                 return JsonResponse({'error': 'Unable to fetch live price for the ticker'}, status=500)
 

@@ -23,8 +23,8 @@ export interface JoinGameValues {
 
 export interface InteractWithHoldingValues {
   symbol: string,
-  game_id: number,
-  shares: number
+  game_id: string | null,
+  shares: string
 
 }
 
