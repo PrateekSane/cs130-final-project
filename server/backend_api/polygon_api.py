@@ -76,3 +76,5 @@ class Yahoo:
             time.sleep(self.interval)
 
     """
+
+

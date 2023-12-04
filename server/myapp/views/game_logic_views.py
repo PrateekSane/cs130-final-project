@@ -219,7 +219,7 @@ class InteractWithHolding(APIView):
 
             # Instantiate the Yahoo class to get live price
             yahoo_data = Yahoo(tickers=[symbol], interval=60)  # Adjust the interval as needed
-            live_price = yahoo_data.fetch_live_price(symbol)
+            live_price = yahoo_data.fetch_live_ticker(symbol)
 
             if live_price is None:
                 return JsonResponse({'error': 'Unable to fetch live price for the ticker'}, status=500)
