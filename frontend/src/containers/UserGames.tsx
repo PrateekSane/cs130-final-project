@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import AuthContext from './AuthContext';  
 
 interface Game {
-    game_id: number;
+    game_id: string;
     start_time: string;
     end_time: string | null;
     starting_balance: number;
@@ -22,6 +22,10 @@ const UserGames = () => {
     const navigateToCreateGame = () => {
         navigate('/create-game');  // Update with the correct path to your CreateGame route
     };
+    const navigateToJoinGame = () => {
+        navigate('/join-game');  // Update with the correct path to your CreateGame route
+    };
+
 
     useEffect(() => {
         if (!authContext || !authContext.user || !authContext.authToken) {
@@ -48,7 +52,8 @@ const UserGames = () => {
         .then(data => {
             console.log(data);
             if (Array.isArray(data.games)) {
-                const formattedGames = data.games.map((game: any) => game.fields);
+                const formattedGames = data.games.map((game: any) => game);
+                console.log(formattedGames);
                 setGames(formattedGames);
                 
             } else {
@@ -69,16 +74,23 @@ const UserGames = () => {
 
     return (
         <div>
-            <Button style={{ position: 'absolute', right: 20, top: 50 }} onClick={navigateToCreateGame}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px',position: 'absolute', right: 20, top: 50 }}>
+            <Button onClick={navigateToCreateGame}>
                 Create Game
             </Button>
+            <Button onClick = {navigateToJoinGame}>
+                Join Game
+            </Button>
+
+            </div>
             <h2>User Games</h2>
+            <div style={{ maxHeight: '80vh', overflowY: 'auto'}}>
             {games.length === 0 ? (
                 <p>You are not in any current games!</p>
             ) : (
                 <ul>
                     {games.map(game => (
-                        <li key={game.game_id}>
+                        <li key={game?.game_id}>
                             <p>Game ID: {game.game_id}</p>
                             <p>Start Time: {game.start_time}</p>
                             <p>End Time: {game.end_time}</p>
@@ -87,6 +99,7 @@ const UserGames = () => {
                     ))}
                 </ul>
             )}
+            </div>
         </div>
     );
 };

@@ -16,6 +16,10 @@ export interface CreateGameValues {
   duration: string;
 
 }
+export interface JoinGameValues {
+  game_id: string
+
+}
 
 export type AuthContextValue = {
   user: any; // Change 'any' to the actual type of your user

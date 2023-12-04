@@ -2,6 +2,7 @@ import json
 import uuid
 
 from datetime import datetime, timedelta
+from django.utils import timezone
 
 from ..models import *
 
@@ -27,7 +28,6 @@ class CreateGameView(APIView):
     permission_classes = [IsAuthenticated,]
     def post(self, request):
 
-        try:
             data = request.data
             username = data.get("username")
             duration = data.get("duration")
@@ -39,15 +39,15 @@ class CreateGameView(APIView):
                 return JsonResponse({'error': 'Please specify a starting balance of at least 1000 dollars'}, status=404)
 
             
-            current_time = datetime.now()
+            current_time = timezone.now()
 
          # Calculate the end time as 60 minutes from the start time
 
-            
+            print(duration)
             end_time = current_time + duration_map[duration]
 
             # Create a new game object with the current time and end time
-            new_game = Game(start_time=current_time, end_time=end_time, starting_balance = starting_balance)
+            new_game = Game(join_string = uuid.uuid4(), start_time=current_time, end_time=end_time, starting_balance = starting_balance)
             new_game.save()
 
 
@@ -77,9 +77,6 @@ class CreateGameView(APIView):
 
             # Return a success response
             return JsonResponse(game_data)
-        except Exception as e:
-        # Handle any exceptions or errors
-            return JsonResponse({'error': str(e)}, status=500)
         
 class JoinGameView(APIView):
     permission_classes = [IsAuthenticated,]
@@ -92,11 +89,15 @@ class JoinGameView(APIView):
 
             # Fetch the game instance based on the provided ID
             try:
-                game_to_join = Game.objects.get(game_id=game_id)
+                game_to_join = Game.objects.get(join_string=game_id)
+                
+
             except Game.DoesNotExist:
                 return JsonResponse({'error': 'Game not found'}, status=404)
-
-            current_time = datetime.now()
+            user_id = request.user.id
+            if PlayerProfile.objects.filter(game=game_to_join, user_id=user_id).exists():
+                return JsonResponse({'error': 'User is already part of this game'}, status=400)
+            current_time = timezone.now()
 
             # Check if the game is still open for joining
             if current_time > game_to_join.end_time:
@@ -106,7 +107,7 @@ class JoinGameView(APIView):
             new_portfolio = Portfolio(name=f"{username}'s Portfolio", created_date=current_time)
             new_portfolio.save()
 
-            # Create a PlayerProfile for the joining user
+            # Create a PlayerProfile for the joining use
             player_profile = PlayerProfile(
                 user=request.user,
                 game=game_to_join,
@@ -117,11 +118,12 @@ class JoinGameView(APIView):
             player_profile.save()
 
             # Add the PlayerProfile to the game
-            game_to_join.players.add(player_profile)
+            game_to_join.player_profiles.add(player_profile)
 
             return JsonResponse({'message': 'Successfully joined the game', 'game_id': game_to_join.game_id})
         except Exception as e:
             # Handle any exceptions or errors
+            print(e)
             return JsonResponse({'error': str(e)}, status=500)
         
 class GetGameAndPlayerData(APIView):
@@ -136,7 +138,7 @@ class GetGameAndPlayerData(APIView):
             player_profile = None
 
             try:
-                game = Game.objects.get(game_id = game_id)
+                game = Game.objects.get(join_string = game_id)
             except Game.DoesNotExist:
                 return JsonResponse({'error': 'Game not found'}, status=404)
             
@@ -151,6 +153,7 @@ class GetGameAndPlayerData(APIView):
             return JsonResponse(game_and_player_data)
 
         except Exception as e:
+            print(e)
             return JsonResponse({'error': str(e)}, status=500)
 
 
@@ -159,23 +162,28 @@ class UserGamesView(APIView):
 
     def get(self, request):
         user = request.user
-        try:
+        #try:
             # Retrieve all PlayerProfiles associated with the user
-            player_profiles = PlayerProfile.objects.filter(user=user)
 
-            # Extract the games from these profiles
-            games = [profile.game for profile in player_profiles]
+        player_profiles = PlayerProfile.objects.filter(user=user)
 
-            # Serialize the game data
-            games_data = serializers.serialize('json', games)
-            games_data = json.loads(games_data)
-            print(games_data)
+        # Extract the games from these profiles
+        games = [profile.game for profile in player_profiles]
+        # Serialize the game data
+        games_data = serializers.serialize('json', games)
+        games_data = json.loads(games_data)
+        print("hello", games_data)
+        formatted_games = []
+        for game in games_data:
+            game_info = game['fields'].copy()
+            game_info['game_id'] = game['pk']
+            formatted_games.append(game_info)
 
-            # Return the games as a JSON response
-            return JsonResponse({'games': games_data})
-        except Exception as e:
-            # Handle any exceptions
-            return JsonResponse({'error': str(e)}, status=500)
+        # Return the games as a JSON response
+        return JsonResponse({'games': formatted_games})
+        # except Exception as e:
+        #     # Handle any exceptions
+        #     return JsonResponse({'error': str(e)}, status=500)
 
 class InteractWithHolding(APIView):
     permission_classes = [IsAuthenticated,]
@@ -240,6 +248,7 @@ class InteractWithHolding(APIView):
             return JsonResponse({'message': 'Holding successfully purchased'})
 
         except Exception as e:
+            print(e)
             return JsonResponse({'error': str(e)}, status=500)
 
         

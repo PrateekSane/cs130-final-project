@@ -2,23 +2,22 @@ import React, { useState, useContext } from 'react';
 import AuthContext from './AuthContext';  // Update with actual path to AuthContext
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import { CreateGameValues } from "./interfaces";
+import { JoinGameValues } from "./interfaces";
 import { useNavigate } from 'react-router-dom';
 
-const CreateGame = () => {
-    const [createGameData, setCreateGameData] = useState<CreateGameValues>({
-        startingBalance: 0,
-        duration: '',
+const JoinGame = () => {
+    const [joinGameData, setJoinGameData] = useState<JoinGameValues>({
+        game_id: "",
     });
     const navigate = useNavigate();
 
     const authContext = useContext(AuthContext);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-    const createGameEndpoint = 'http://127.0.0.1:8000/create-game/';
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement & HTMLSelectElement>) : void => {
-        setCreateGameData({
-            ...createGameData,
+    const joinGameEndpoint = 'http://127.0.0.1:8000/join-game/';
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) : void => {
+        setJoinGameData({
+            ...joinGameData,
             [e.target.name]: e.target.value
         });
     };
@@ -30,14 +29,13 @@ const CreateGame = () => {
             return;
         }
         const data = {
-            starting_balance: createGameData.startingBalance,
-            duration: createGameData.duration,
+            game_id: joinGameData.game_id,
         };
 
         setLoading(true);
         const { authToken } = authContext;
 
-        fetch(createGameEndpoint, {
+        fetch(joinGameEndpoint, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${authToken.access}`,
@@ -54,7 +52,7 @@ const CreateGame = () => {
         })
         .then(data => {
             // Handle successful game creation
-            console.log('Game created:', data);
+            console.log('Game Joined:', data);
             navigate("/games");
             setLoading(false);
         })
@@ -73,35 +71,23 @@ const CreateGame = () => {
       style={{ display: "block", width: "45%", margin: "0 auto" }}
       onSubmit={handleSubmit}
     >
-      <h1>Create a Game!</h1>
+      <h1>Join A Game!</h1>
       <Form.Group className="mb-3">
-        <Form.Label>Starting Balance: </Form.Label>
+        <Form.Label>Game_ID: </Form.Label>
         <Form.Control
-            type="number" // Changed to number
-            name="startingBalance"
-            placeholder="0"
+            type="text" // Changed to number
+            name="game_id"
+            placeholder= "ad"
             onChange={handleChange}
-            value={createGameData.startingBalance}
+            value={joinGameData.game_id}
         />
         </Form.Group>
-      <Form.Group className="mb-3">
-      <Form.Label>Duration: </Form.Label>
-        <Form.Select name="duration" onChange={handleChange} value={createGameData.duration}>
-            <option value="">Select Duration</option>
-            <option value="1 hour">1 Hour</option>
-            <option value="1 day">1 Day</option>
-            <option value="1 week">1 Week</option>
-            <option value="2 weeks">2 Weeks</option>
-            <option value="1 month">1 Month</option>
-        </Form.Select>
-
-      </Form.Group>
       <Button variant="primary" type="submit">
-        Create Game
+        Join Game
       </Button>
     </Form>
     </>
     );
 };
 
-export default CreateGame;
+export default JoinGame;
