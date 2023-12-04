@@ -8,6 +8,9 @@ import Scoreboard from "./containers/Scoreboard";
 import SignupPage from "./containers/Signup";
 import Stock from "./containers/Stock";
 import { AuthProvider } from "./containers/AuthContext";
+import UserGames from "./containers/UserGames";
+import CreateGame from "./containers/CreateGame";
+import JoinGame from "./containers/JoinGame";
 function App() {
   return (
     <div className="App">
@@ -21,6 +24,9 @@ function App() {
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/stocks" element={<Stock />} />
             <Route path="/scoreboard" element={<Scoreboard />} />
+            <Route path="/games" element={<UserGames />} />
+            <Route path="/create-game" element = {<CreateGame />} />
+            <Route path="/join-game" element = {<JoinGame />} />
           </Routes>
         </div>
         </AuthProvider>

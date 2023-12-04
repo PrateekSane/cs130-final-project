@@ -26,6 +26,11 @@ const Navbar = () => {
           <li>
             <Link to="/scoreboard">Scoreboard</Link>
           </li>
+          {user ? 
+            <li>
+              <Link to = "/games">Games</Link>
+            </li>: (<></>)
+          }
         </ul>
         <ul className="right-contents">
 

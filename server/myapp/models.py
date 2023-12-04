@@ -13,13 +13,15 @@ class CustomUser(AbstractUser):
         return self.username
     
     
+
 class Game(models.Model):
     game_id = models.AutoField(primary_key=True)
     start_time = models.DateTimeField()
+    join_string = models.CharField(max_length=50, unique=True, default=uuid.uuid4())
     end_time = models.DateTimeField(null=True, blank=True)
     starting_balance = models.FloatField()
 
-    players = models.ManyToManyField(CustomUser, related_name='games_played')
+    player_profiles = models.ManyToManyField('PlayerProfile', related_name='games_played')
 
 class PlayerProfile(models.Model):
     player_profile_id = models.AutoField(primary_key=True)

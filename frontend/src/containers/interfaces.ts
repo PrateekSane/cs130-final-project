@@ -11,6 +11,16 @@ export interface SignupFormValues {
   password: string;
 }
 
+export interface CreateGameValues {
+  startingBalance: number;
+  duration: string;
+
+}
+export interface JoinGameValues {
+  game_id: string
+
+}
+
 export type AuthContextValue = {
   user: any; // Change 'any' to the actual type of your user
   login: (data: any) => void; // Change 'any' to the data type expected for login
