@@ -27,11 +27,4 @@ jobs:
         pip install -r server/requirements.txt
     - name: Run Tests
       run: | 
-        cd server
-        touch .env
-        echo DATABASE_URI = "'test'" >> .env
-        cd server
-        touch .env
-        echo DATABASE_URI = "'test'" >> .env
-        cd ..
         python manage.py test
