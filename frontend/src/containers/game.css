@@ -30,3 +30,34 @@
 .game-list li button:hover {
   background-color: #001a8c;
 }
+
+.game-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 15vw;
+}
+
+.game-wrapper form {
+  width: 30%;
+}
+
+.holding-list {
+  border: 1px solid #ccc;
+  padding: 30px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.holding-list li {
+  list-style: none;
+  font-size: larger;
+}
+
+.scoreboard-wrapper {
+  margin-top: 5vh;
+  text-align: center;
+}
+
+.scoreboard-wrapper p {
+  font-size: larger;
+}
