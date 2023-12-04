@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [ "main" ]
 env:
-  DATABSE_URI: secret
+  DATABASE_URI: secret
 
 jobs:
   build:
