@@ -5,9 +5,11 @@ import LandingPage from "./containers/LandingPage";
 import LoginPage from "./containers/Login";
 import Navbar from "./containers/Navbar";
 import Scoreboard from "./containers/Scoreboard";
+import CreateGame from "./containers/CreateGame";
 import SignupPage from "./containers/Signup";
 import Stock from "./containers/Stock";
 import { AuthProvider } from "./containers/AuthContext";
+import JoinGame from "./containers/JoinGame";
 function App() {
   return (
     <div className="App">
@@ -21,6 +23,8 @@ function App() {
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/stocks" element={<Stock />} />
             <Route path="/scoreboard" element={<Scoreboard />} />
+            <Route path="/create_game" element={<CreateGame />} />
+            <Route path="/join_game/0" element={<JoinGame />} />
           </Routes>
         </div>
         </AuthProvider>

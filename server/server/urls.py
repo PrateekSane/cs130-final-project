@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from myapp.views.views import LoginView, LogoutView, RegisterView, create_game_view, join_game
+from myapp.views.views import LoginView, LogoutView, RegisterView, CreateGameView, join_game, ScoreboardView
 
 from django.contrib.auth import views as auth_views
 
@@ -28,7 +28,8 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='auth_register'),
     path('login/', LoginView.as_view(), name='auth_login'),
     path('logout/', LogoutView.as_view(), name='auth_logout'),
-    path('create_game/', create_game_view, name='create_game'),
+    path('create_game/', CreateGameView.as_view(), name='create_game'),
+    path('view_scoreboard/', ScoreboardView.as_view(), name='view_scoreboard'), 
     path('join_game/<int:game_id>/', join_game, name = 'join_game'),
     path('token/', 
           jwt_views.TokenObtainPairView.as_view(), 

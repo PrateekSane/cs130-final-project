@@ -153,3 +153,84 @@ def join_game(request, game_id):
 #         return JsonResponse({'error': 'Game not found'}, status=404)
 
 
+class ScoreboardView(APIView):
+    permission_classes = [AllowAny] # Make authenticated only, but currently not working
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+
+                # Extract email and password from the JSON data
+            #print(data)
+            email = data["email"]
+            password = data["password"]
+            #print(email, password)
+            email_backend = EmailBackend()
+                # Authenticate the user
+            user = email_backend.authenticate(email=email, password=password)
+            if user is not None:
+                #token = RefreshToken.for_user(user)
+                return Response({"players": ["Test0", "Test1"]})
+                # Get game_id by getting player profile from email and password
+                #return get_game(0)
+            else:
+                return Response({"error": "Invalid login credentials"})
+        except json.JSONDecodeError as e:
+            return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+        
+def get_game(game_id):
+    # Like join_game but with no modifications to the structure
+    # Get the game, then access the players, then access the player profiles to get current balances
+    try:
+        game = Game.objects.get(pk=game_id)
+
+        payload_json = serializers.serialize("json", [game])
+
+        payload_data = json.loads(payload_json)
+
+        return JsonResponse(payload_data)
+    except Game.DoesNotExist:
+        return JsonResponse({'error': 'Game not found'}, status=404)
+    
+class CreateGameView(APIView):
+    permission_classes = [AllowAny] # Make authenticated only, but currently not working
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+
+                # Extract email and password from the JSON data
+            #print(data)
+            email = data["email"]
+            password = data["password"]
+            #print(email, password)
+            email_backend = EmailBackend()
+                # Authenticate the user
+            user = email_backend.authenticate(email=email, password=password)
+            if user is not None:
+                create_game_view()
+                print("create_game_view invoked")
+            else:
+                return Response({"error": "Invalid login credentials"})
+        except json.JSONDecodeError as e:
+            return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+        
+class JoinGameView(APIView):
+    permission_classes = [AllowAny] # Make authenticated only, but currently not working
+    def post(self, request, *args, **kwargs):
+        try:
+            data = json.loads(request.body)
+
+                # Extract email and password from the JSON data
+            #print(data)
+            email = data["email"]
+            password = data["password"]
+            #print(email, password)
+            email_backend = EmailBackend()
+                # Authenticate the user
+            user = email_backend.authenticate(email=email, password=password)
+            if user is not None:
+                join_game(game_id=0)
+                print("join_game invoked")
+            else:
+                return Response({"error": "Invalid login credentials"})
+        except json.JSONDecodeError as e:
+            return JsonResponse({'error': 'Invalid JSON data'}, status=400)

@@ -12,6 +12,7 @@ const Navbar = () => {
     return <div>Auth context is not available</div>;
   }
   let {user, logoutUser} = authContext;
+  let receivedInvites = 0;
   
   return (
     <>
@@ -25,6 +26,12 @@ const Navbar = () => {
           </li>
           <li>
             <Link to="/scoreboard">Scoreboard</Link>
+          </li>
+          <li>
+            <Link to="/create_game">Create Game</Link>
+          </li>
+          <li>
+            {(receivedInvites > -1) ? ( <Link to={"/join_game/" + receivedInvites.toString()}>Join Game</Link> ) : ( <>No Invites</>) }
           </li>
         </ul>
         <ul className="right-contents">
