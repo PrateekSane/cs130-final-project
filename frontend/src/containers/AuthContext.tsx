@@ -29,7 +29,11 @@ export default AuthContext;
 export const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
   const [user, setUser] = useState<User | null>(() => {
     const token = localStorage.getItem('authtoken');
-    return token ? jwtDecode<User>(token) : null;
+    try {
+      return token ? jwtDecode<User>(token) : null;
+    } catch (e) {
+      return null;
+    }
   });
 
   const [authToken, setAuthToken] = useState<AuthToken | null>(() => {
@@ -56,11 +60,19 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
     });
 
     const data = await response.json();
+    console.log(data);
 
-    if (data) {
+    if (data.error == "Invalid login credentials") {
+      // TODO: Clear the current form fields 
+      //formData.set('email', '');
+      alert('Invalid email/password');
+    } else if (data) {
       localStorage.setItem('authtoken', JSON.stringify(data));
+      localStorage.setItem('email', email);
+      localStorage.setItem('password', password);
       setAuthToken(data);
       setUser(jwtDecode<User>(data.access));
+      //console.log(jwtDecode<User>(data.access));
       navigate('/');
     } else {
       alert('Something went wrong while logging in the user!');
@@ -84,6 +96,8 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
     const data = await response.json();
     if (data) {
         localStorage.removeItem('authtoken');
+        localStorage.removeItem('email');
+        localStorage.removeItem('password');
         setAuthToken(null);
         setUser(null);
         navigate('/login');

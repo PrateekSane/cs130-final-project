@@ -5,9 +5,11 @@ import LandingPage from "./containers/LandingPage";
 import LoginPage from "./containers/Login";
 import Navbar from "./containers/Navbar";
 import Scoreboard from "./containers/Scoreboard";
+//import CreateGame from "./containers/CreateGame";
 import SignupPage from "./containers/Signup";
 import Stock from "./containers/Stock";
 import { AuthProvider } from "./containers/AuthContext";
+import JoinGame from "./containers/JoinGame";
 import UserGames from "./containers/UserGames";
 import CreateGame from "./containers/CreateGame";
 function App() {

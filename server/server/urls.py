@@ -17,6 +17,9 @@ Including another URLconf
 from django.urls import path
 from myapp.views.auth_views import *
 from myapp.views.game_logic_views import *
+#from myapp.views.views import LoginView, LogoutView, RegisterView, CreateGameView, join_game, ScoreboardView
+
+from django.contrib.auth import views as auth_views
 
 from rest_framework_simplejwt import views as jwt_views
 
@@ -29,6 +32,9 @@ urlpatterns = [
     path('game-player-data/', GetGameAndPlayerData.as_view(), name='game-player-data'),
     path('user-games/', UserGamesView.as_view(), name='user-games'),
     path('interact-holding/', InteractWithHolding.as_view(), name='interact-holding'),
+    path('create_game/', CreateGameView.as_view(), name='create_game'),
+    path('view_scoreboard/', ScoreboardView.as_view(), name='view_scoreboard'), 
+    path('join_game/<int:game_id>/', join_game, name = 'join_game'),
     path('token/', 
           jwt_views.TokenObtainPairView.as_view(), 
           name ='token_obtain_pair'),

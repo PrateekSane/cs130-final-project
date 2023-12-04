@@ -12,6 +12,7 @@ const Navbar = () => {
     return <div>Auth context is not available</div>;
   }
   let {user, logoutUser} = authContext;
+  let receivedInvites = 0;
   
   return (
     <>
