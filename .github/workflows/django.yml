@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 env:
-  DATABASE_URI=mongodb+srv://jamesg6197:cs130group@cluster0.vxqrgxb.mongodb.net/?retryWrites=true&w=majority
+  DATABASE_URI: 'mongodb+srv://jamesg6197:cs130group@cluster0.vxqrgxb.mongodb.net/?retryWrites=true&w=majority'
 
 jobs:
   build:
