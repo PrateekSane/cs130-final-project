@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Form from "react-bootstrap/Form";
 import Button from 'react-bootstrap/Button'; 
 import AuthContext from './AuthContext';  
 
@@ -70,11 +71,55 @@ const UserGames = () => {
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
 
+
+
+    /*
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        const { name, value } = e.target;
+        console.log("join game field changed");
+        //setLoginData((prevValues) => ({
+        //  ...prevValues,
+        //  [name]: value,
+        //}));
+      };
+    */
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement & HTMLSelectElement>) : void => {
+        console.log("join game field changed");
+    };
+
+    const handleClick = () => {
+        try {
+            console.log("click join game");
+            //const formData = new FormData(e.currentTarget);
+            //await loginUser(e, formData);
+            // Handle successful login
+        } catch (error) {
+            // Handle login error
+            console.error('Login failed', error);
+        }
+    };
+
     return (
         <div>
             <Button style={{ position: 'absolute', right: 20, top: 50 }} onClick={navigateToCreateGame}>
                 Create Game
             </Button>
+            <div>
+                <Button style={{ position: 'absolute', right: 160, top: 50 }} onClick={handleClick}>
+                    Join Game
+                </Button>
+                <Form.Group style={{ position: 'absolute', right: 160, top: 100, width: 100}}>
+                    <Form.Select name="duration" onChange={handleChange} value={0}>
+                        <option value="">Select Game to Join</option>
+                        <option value="1 hour">1 Hour</option>
+                        <option value="1 day">1 Day</option>
+                        <option value="1 week">1 Week</option>
+                        <option value="2 weeks">2 Weeks</option>
+                        <option value="1 month">1 Month</option>
+                    </Form.Select>
+                </Form.Group>
+            </div>
             <h2>User Games</h2>
             {games.length === 0 ? (
                 <p>You are not in any current games!</p>
