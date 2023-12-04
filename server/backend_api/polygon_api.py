@@ -6,7 +6,7 @@ from yahoo_fin import stock_info as si
 import time
 import pandas as pd
 
-class PolygonData():
+class PolygonData:
 
 
     #Add in real time refresh (might need paid version)
@@ -50,21 +50,24 @@ class PolygonData():
 
 
 
-class Yahoo():
+class Yahoo:
     def __init__(self, tickers, interval,duration = 24*60*60):
         self.tickers = tickers
         self.interval = interval
         self.data = pd.DataFrame(columns=['Ticker', 'Live Price', 'Timestamp'])
         self.max_duration = duration
 
+    def fetch_live_price(self, ticker):
+        """
+        Fetch live stock data for the provided ticker.
+        """
+        try:
+            live_price = si.get_live_price(ticker)
+            return live_price
+        except Exception as e:
+            print(f"Error fetching live price for {ticker}: {e}")
+            return None
 
-    
-    
-    def fetch_live_ticker(self,ticker):
-        """
-        Fetch live stock data for provided ticker. 
-        """
-        return si.get_live_price(ticker)
     
     """
     def fetch_live_prices(self):
