@@ -8,6 +8,7 @@ interface Game {
     start_time: string;
     end_time: string | null;
     starting_balance: number;
+    join_string: string;
 }
 
 const UserGames = () => {
@@ -15,6 +16,7 @@ const UserGames = () => {
     const [games, setGames] = useState<Game[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [showJoinCode, setShowJoinCode] = useState<boolean>(true);
     const userGamesEndpoint = 'http://127.0.0.1:8000/user-games/';
 
     const navigate = useNavigate(); 
@@ -90,12 +92,20 @@ const UserGames = () => {
             ) : (
                 <ul>
                     {games.map(game => (
+                        <>
                         <li key={game?.game_id}>
                             <p>Game ID: {game.game_id}</p>
                             <p>Start Time: {game.start_time}</p>
                             <p>End Time: {game.end_time}</p>
                             <p>Starting Balance: {game.starting_balance}</p>
                         </li>
+                        <Button onClick={() => {setShowJoinCode(false)}}>Show Join Code</Button>
+                        {{showJoinCode} ? (
+                            <div>{game.join_string}</div>
+                        ) : (
+                            <div style={{display: "none"}}>{game.join_string}</div>
+                        )}
+                        </>
                     ))}
                 </ul>
             )}
