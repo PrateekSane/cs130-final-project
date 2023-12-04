@@ -12,6 +12,7 @@ import UserGames from "./containers/UserGames";
 import CreateGame from "./containers/CreateGame";
 import JoinGame from "./containers/JoinGame";
 import InteractWithHolding from "./containers/InteractWithHolding";
+import PlayGame from "./containers/PlayGame";
 function App() {
   return (
     <div className="App">
@@ -29,6 +30,7 @@ function App() {
             <Route path="/create-game" element = {<CreateGame />} />
             <Route path="/interact-with-holding" element = {<InteractWithHolding />} />
             <Route path="/join-game" element = {<JoinGame />} />
+            <Route path="/play-game" element = {<PlayGame />} />
           </Routes>
         </div>
         </AuthProvider>

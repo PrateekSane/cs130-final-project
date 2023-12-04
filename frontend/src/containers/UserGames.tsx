@@ -3,6 +3,7 @@ import Button from "react-bootstrap/Button";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "./AuthContext";
 import "./game.css";
+import PlayGame from "./PlayGame";
 
 interface Game {
   game_id: string;
@@ -28,7 +29,10 @@ const UserGames = () => {
   };
 
   const enterGame = (game_id: string) => {
-    navigate(`/game/${game_id}`);
+    //navigate(`/game/${game_id}`);
+    navigate("/play-game");
+    console.log("entered play-game but using enterGame to init");
+    localStorage.setItem('selectedGame', game_id);
   };
 
   const formatTime = (timestamp: string | null): string => {
