@@ -253,3 +253,30 @@ class InteractWithHolding(APIView):
 
         
     
+class PlayGameView(APIView):
+    permission_classes = [IsAuthenticated,]
+
+    def get(self, request):
+        user = request.user
+        #try:
+            # Retrieve all PlayerProfiles associated with the user
+
+        player_profiles = PlayerProfile.objects.filter(user=user)
+
+        # Extract the games from these profiles
+        games = [profile.game for profile in player_profiles]
+        # Serialize the game data
+        games_data = serializers.serialize('json', games)
+        games_data = json.loads(games_data)
+        print("hello", games_data)
+        formatted_games = []
+        for game in games_data:
+            game_info = game['fields'].copy()
+            game_info['game_id'] = game['pk']
+            formatted_games.append(game_info)
+
+        # Return the games as a JSON response
+        return JsonResponse({'games': formatted_games})
+        # except Exception as e:
+        #     # Handle any exceptions
+        #     return JsonResponse({'error': str(e)}, status=500)

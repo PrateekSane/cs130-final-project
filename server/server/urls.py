@@ -29,6 +29,7 @@ urlpatterns = [
     path('join-game/', JoinGameView.as_view(), name='join-game'),
     path('game-player-data/', GetGameAndPlayerData.as_view(), name='game-player-data'),
     path('user-games/', UserGamesView.as_view(), name='user-games'),
+    path('play-game', PlayGameView.as_view(), name='play-game'),
     path('interact-holding/', InteractWithHolding.as_view(), name='interact-holding'),
     path('token/', 
           jwt_views.TokenObtainPairView.as_view(), 
