@@ -21,6 +21,13 @@ export interface JoinGameValues {
 
 }
 
+export interface InteractWithHoldingValues {
+  symbol: string,
+  game_id: number,
+  shares: number
+
+}
+
 export type AuthContextValue = {
   user: any; // Change 'any' to the actual type of your user
   login: (data: any) => void; // Change 'any' to the data type expected for login
