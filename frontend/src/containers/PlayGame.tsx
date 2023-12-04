@@ -61,6 +61,8 @@ const PlayGame = () => {
             setLoading(false);
         });
 
+        setIDToPlay(localStorage.getItem('selectedGame'));
+
     }, [authContext]);
 
     if (loading) return <div>Loading...</div>;
@@ -73,7 +75,7 @@ const PlayGame = () => {
 
     return (
 
-        (idToPlay === null) ? (
+        (idToPlay === null || localStorage.getItem('selectedGame') === null) ? (
             <div>
                 <h2>User Games</h2>
                 <div style={{ maxHeight: '80vh', overflowY: 'auto'}}>

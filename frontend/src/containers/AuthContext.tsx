@@ -84,6 +84,7 @@ export const AuthProvider: React.FC<{children: ReactNode}> = ({ children }) => {
     const data = await response.json();
     if (data) {
         localStorage.removeItem('authtoken');
+        localStorage.removeItem('selectedGame');
         setAuthToken(null);
         setUser(null);
         navigate('/login');
