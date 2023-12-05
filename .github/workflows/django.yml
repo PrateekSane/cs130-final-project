@@ -1,0 +1,37 @@
+name: Basic Django CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  DATABASE_URI: 'mongodb+srv://jamesg6197:cs130group@cluster0.vxqrgxb.mongodb.net/?retryWrites=true&w=majority'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 4
+      matrix:
+        python-version: [3.9]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r server/requirements.txt
+        pip install djangorestframework
+        pip install --upgrade djangorestframework-simplejwt
+    - name: Run Tests
+      run: | 
+        cd server 
+        cat .env
+        python manage.py test
