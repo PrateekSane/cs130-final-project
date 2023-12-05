@@ -128,33 +128,32 @@ class JoinGameView(APIView):
         
 class GetGameAndPlayerData(APIView):
     permission_classes = [IsAuthenticated,]
+
     def post(self, request):
+        user = request.user
+        game_id = request.data.get("game_id")
+
         try:
-            data = request.data
-            user = request.user
-            game_id = data.get("game_id")
+            # Retrieve game, player profile, and holdings
             
-            game = None
-            player_profile = None
+            game = Game.objects.get(game_id=game_id)
 
-            try:
-                game = Game.objects.get(join_string = game_id)
-            except Game.DoesNotExist:
-                return JsonResponse({'error': 'Game not found'}, status=404)
-            
-            try:
-                player_profile = PlayerProfile.objects.get(user=user, game=game)
-            except PlayerProfile.DoesNotExist:
-                return JsonResponse({'error': 'You\'re not apart of this game'}, status=404)
-            
-            game_and_player_json = serializers.serialize("json", [game, player_profile])
+            print(user, game)
+            player_profile = PlayerProfile.objects.get(user=user, game=game)
+            portfolio = player_profile.portfolio
+            holdings = Holding.objects.filter(portfolio=portfolio)
 
-            game_and_player_data= json.loads(game_and_player_json)
-            return JsonResponse(game_and_player_data)
+            # Serialize data
+            serialized_data = serializers.serialize("json", [game, player_profile, portfolio] + list(holdings))
 
         except Exception as e:
+            # General exception for unexpected errors
             print(e)
             return JsonResponse({'error': str(e)}, status=500)
+
+        # Parse serialized data and return response
+        game_and_player_data = json.loads(serialized_data)
+        return JsonResponse({"game_and_player_data": game_and_player_data})
 
 
 class UserGamesView(APIView):
@@ -172,7 +171,8 @@ class UserGamesView(APIView):
         # Serialize the game data
         games_data = serializers.serialize('json', games)
         games_data = json.loads(games_data)
-        print("hello", games_data)
+
+
         formatted_games = []
         for game in games_data:
             game_info = game['fields'].copy()
@@ -189,31 +189,26 @@ class InteractWithHolding(APIView):
     permission_classes = [IsAuthenticated,]
 
     def post(self, request):
-        try:
+    
             data = request.data
             symbol = data.get("symbol")
             game_id = int(data.get("game_id"))
             shares = int(data.get("shares", 0))
             user = request.user
             current_time = datetime.now()
-
+            user = CustomUser.objects.get(username=user)
             # Validate the input data
-            if not symbol or not game_id or shares <= 0:
+            if not symbol or not game_id:
                 return JsonResponse({'error': 'Invalid input data'}, status=400)
             # Fetch the game instance
-            try:
-                game = Game.objects.get(game_id=game_id)
-            except Game.DoesNotExist:
-                return JsonResponse({'error': 'Game not found'}, status=404)
+            
+            game = Game.objects.get(game_id=game_id)
             # Check if the game is still active
             # if current_time > game.end_time:
             #     return JsonResponse({'error': 'Game has already ended'}, status=400)
 
             # Fetch the player's profile for this game
-            try:
-                player_profile = PlayerProfile.objects.get(user=user, game=game)
-            except PlayerProfile.DoesNotExist:
-                return JsonResponse({'error': 'Player profile not found for this game'}, status=404)
+            player_profile = PlayerProfile.objects.get(user=user, game=game)
 
             # Instantiate the Yahoo class to get live price
             yahoo_data = Yahoo(tickers=[symbol], interval=60)  # Adjust the interval as needed
@@ -245,9 +240,9 @@ class InteractWithHolding(APIView):
 
             return JsonResponse({'message': 'Holding successfully purchased'})
 
-        except Exception as e:
-            print(e)
-            return JsonResponse({'error': str(e)}, status=500)
+        # except Exception as e:
+        #     print(e)
+        #     return JsonResponse({'error': str(e)}, status=500)
 
         
     
@@ -278,3 +273,21 @@ class PlayGameView(APIView):
         # except Exception as e:
         #     # Handle any exceptions
         #     return JsonResponse({'error': str(e)}, status=500)
+
+
+class GetScoreboard(APIView):
+    permission_classes = [IsAuthenticated,]
+
+    def post(self, request):
+        game_id = request.data.get("game_id")
+        # Retrieve all PlayerProfiles associated with the game_id and sort by current balance
+        player_profiles = PlayerProfile.objects.filter(game_id=game_id).order_by('-current_balance')
+        profiles_data = serializers.serialize('json', player_profiles)
+        profiles_data = json.loads(profiles_data)
+        print(profiles_data)
+        for profile in profiles_data:
+            user_id = profile['fields']['user']  # Assuming 'user' field holds the user ID
+            user = CustomUser.objects.get(id=user_id)  # Assuming User model is used for user data
+            profile['fields']['username'] = user.username  # Add username to the profile data
+        print(profiles_data)
+        return JsonResponse({"scoreboard_profiles": profiles_data})

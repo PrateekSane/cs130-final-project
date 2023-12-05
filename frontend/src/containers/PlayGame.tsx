@@ -14,6 +14,22 @@ interface Game {
   starting_balance: number;
 }
 
+interface HoldingType {
+    symbol: string;
+    quantity: number;
+}
+
+interface Payload {
+    fields: any;
+}
+
+interface PlayerProfileType {
+    username: string;
+    current_balance: number;
+}
+
+
+
 const sampleHoldings = [
   ["AAPL", 5],
   ["GME", 3],
@@ -32,18 +48,21 @@ const PlayGame = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [idToPlay, setIDToPlay] = useState<string | null>(null);
-  const [holdings, setHoldings] = useState(sampleHoldings);
+  const [holdings, setHoldings] = useState<HoldingType[]>([]);
+  const [scoreBoardProfiles, setScoreboardProfiles] = useState<PlayerProfileType[]>([]);
+  const [cash, setCash] = useState<number>(0);
   const [scores, setScores] = useState(sampleScores);
-
+  
   const userGamesEndpoint = "http://127.0.0.1:8000/user-games/";
   const stockDataEndpoint = "http://127.0.0.1:8000/interact-with-holding/";
+  const gameAndPlayerDataEndpoint = "http://127.0.0.1:8000/game-player-data/";
+  const scoreboardEndpoint = "http://127.0.0.1:8000/get-scoreboard/";
 
   const [stockData, setStockData] = useState<InteractWithHoldingValues>({
     symbol: "",
     game_id: "",
     shares: "",
   });
-
   useEffect(() => {
     if (!authContext || !authContext.user || !authContext.authToken) {
       setError("User is not authenticated");
@@ -51,14 +70,25 @@ const PlayGame = () => {
       return;
     }
 
-    const { authToken } = authContext;
+    const { user,authToken } = authContext;
+    console.log(
+        "localStorage.getItem('selectedGame')",
+        localStorage.getItem("selectedGame")
+      );
+    setIDToPlay(localStorage.getItem("selectedGame"));
+    setStockData({
+    ...stockData,
+    game_id: localStorage.getItem("selectedGame"),
+    });
 
-    fetch(userGamesEndpoint, {
-      method: "GET",
+    fetch(gameAndPlayerDataEndpoint, {
+      method: "POST",
       headers: {
         Authorization: `Bearer ${authToken.access}`,
         "Content-Type": "application/json",
       },
+      body: JSON.stringify({game_id: localStorage.getItem("selectedGame")}),
+
     })
       .then((response) => {
         if (!response.ok) {
@@ -68,30 +98,57 @@ const PlayGame = () => {
       })
       .then((data) => {
         console.log(data);
-        if (Array.isArray(data.games)) {
-          const formattedGames = data.games.map((game: any) => game);
-          console.log(formattedGames);
-          setGames(formattedGames);
-        } else {
-          setGames([]); // Sets games to an empty array if data.games is not an array
-        }
+        const game_player_data = data.game_and_player_data;
+        const holdings_payload = game_player_data.slice(3); // Gets elements from the 3rd to the end
 
+        const player_profile = game_player_data[1].fields;
+
+
+        const mappedHoldings = holdings_payload.map((holding:Payload) => ({
+            symbol: holding.fields.stock_symbol,
+            quantity: holding.fields.shares
+        }));
+        setCash(player_profile.current_balance);
+        setHoldings(mappedHoldings);
         setLoading(false);
       })
       .catch((error) => {
         setError(error.message);
         setLoading(false);
       });
-    console.log(
-      "localStorage.getItem('selectedGame')",
-      localStorage.getItem("selectedGame")
-    );
-    setIDToPlay(localStorage.getItem("selectedGame"));
-    setStockData({
-      ...stockData,
-      game_id: localStorage.getItem("selectedGame"),
-    });
-  }, [authContext]);
+
+      fetch(scoreboardEndpoint, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${authToken.access}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({game_id: localStorage.getItem("selectedGame")}),
+  
+      }).then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+        const scoreboard_profiles = data.scoreboard_profiles;
+        const mappedScoreboardProfiles = scoreboard_profiles.map((profile : Payload) => ({
+            username: profile.fields.username,
+            current_balance: profile.fields.current_balance
+        }));
+        setScoreboardProfiles(mappedScoreboardProfiles);
+        setLoading(false);
+
+
+      })
+      .catch((error) => {
+        setError(error.message);
+        setLoading(false);
+      });
+    
+  }, [authContext, loading]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement & HTMLSelectElement>
@@ -150,11 +207,6 @@ const PlayGame = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
-  const enterGame = (game_id: React.SetStateAction<string | null>) => {
-    console.log(game_id);
-    setIDToPlay(game_id);
-  };
-
   return (
     <>
       <div className="game-wrapper">
@@ -188,28 +240,28 @@ const PlayGame = () => {
           </Button>
         </Form>
         <div className="holding-list">
-          <h2>Your Holdings</h2>
-          {holdings.length === 0 ? (
+          <h2>Your Purchase History</h2>
+
+          {holdings.length === 0 || !holdings ? (
             <p>You don't have any holdings</p>
           ) : (
             <ul>
               {holdings.map((stock, index) => (
                 <li key={index}>
-                  {stock[0]}: {stock[1]} shares
+                  {stock.symbol}: {stock.quantity} shares
                 </li>
               ))}
             </ul>
           )}
+          <p>Cash: </p> {cash}
         </div>
       </div>
       <div className="scoreboard-wrapper">
-        <h2>Game Scoreboard</h2>
-        {scores.length &&
-          (scores as [string, number][])
-            .sort((a: [string, number], b: [string, number]) => b[1] - a[1])
-            .map((score, index) => (
+        <h2>Cash Reserves:</h2>
+        {scoreBoardProfiles.length &&
+            scoreBoardProfiles.map((profile, index) => (
               <p key={index}>
-                {score[0]}: {score[1]}
+                {profile.username}: {profile.current_balance}
               </p>
             ))}
       </div>
