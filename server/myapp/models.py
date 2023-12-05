@@ -43,4 +43,5 @@ class Holding(models.Model):
     purchase_date = models.DateField()
     shares = models.IntegerField()
     purchase_price = models.DecimalField(max_digits=10, decimal_places=2)
+    
 

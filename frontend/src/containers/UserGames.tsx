@@ -74,8 +74,6 @@ const UserGames = () => {
         console.log(data);
         if (Array.isArray(data.games)) {
           const formattedGames = data.games.map((game: any) => game);
-          console.log(formattedGames);
-          console.log("HERE", formattedGames[0].player_profiles);
           setGames(formattedGames);
         } else {
           setGames([]); // Sets games to an empty array if data.games is not an array
@@ -96,7 +94,7 @@ const UserGames = () => {
     <div className="game-list">
       <h2>User Games</h2>
       <div style={{ maxHeight: "80vh", overflowY: "auto" }}>
-        {games.length === 0 ? (
+        {games.length === 0 || !games? (
           <p>You are not in any current games!</p>
         ) : (
           <ul>
