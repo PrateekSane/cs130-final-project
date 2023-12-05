@@ -278,3 +278,57 @@ class PlayGameView(APIView):
         # except Exception as e:
         #     # Handle any exceptions
         #     return JsonResponse({'error': str(e)}, status=500)
+
+class TestGetPortfoliosView(APIView):
+    permission_classes = [IsAuthenticated,]
+
+    def get(self, request):
+        user = request.user
+        #try:
+            # Retrieve all PlayerProfiles associated with the user
+
+        player_profiles = PlayerProfile.objects.filter(user=user)
+
+        # Extract the games from these profiles
+        games = [profile.game for profile in player_profiles]
+        # Serialize the game data
+        games_data = serializers.serialize('json', games)
+        games_data = json.loads(games_data)
+        print("hello", games_data)
+        formatted_games = []
+        for game in games_data:
+            game_info = game['fields'].copy()
+            game_info['game_id'] = game['pk']
+            formatted_games.append(game_info)
+
+        # Return the games as a JSON response
+        return JsonResponse({'games': formatted_games})
+        # except Exception as e:
+        #     # Handle any exceptions
+        #     return JsonResponse({'error': str(e)}, status=500)
+
+class GetPortfoliosByPlayerProfileIDView(APIView):
+    permission_classes = [IsAuthenticated,]
+
+    def get(self, request):
+        pfpid = request.player_profile_id
+
+        player_profiles = PlayerProfile.objects.filter(player_profile_id=pfpid)
+
+        # Extract the games from these profiles
+        portfolios = [profile.portfolio for profile in player_profiles]
+        # Serialize the game data
+        portfolios_data = serializers.serialize('json', portfolios)
+        portfolios_data = json.loads(portfolios_data)
+        print("hello portfolios", portfolios_data)
+        formatted_portfolios = []
+        for portfolio in portfolios_data:
+            portfolio_info = portfolio['fields'].copy()
+            portfolio_info['portfolio_id'] = portfolio['pk']
+            formatted_portfolios.append(portfolio_info)
+
+        # Return the games as a JSON response
+        return JsonResponse({'portfolios': formatted_portfolios})
+        # except Exception as e:
+        #     # Handle any exceptions
+        #     return JsonResponse({'error': str(e)}, status=500)

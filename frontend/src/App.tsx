@@ -13,6 +13,8 @@ import CreateGame from "./containers/CreateGame";
 import JoinGame from "./containers/JoinGame";
 import InteractWithHolding from "./containers/InteractWithHolding";
 import PlayGame from "./containers/PlayGame";
+import TestGetPortfolios from "./containers/TestGetPortfolios";
+import GetPortfoliosByPlayerProfileID from "./containers/TestGetPortfolios";
 function App() {
   return (
     <div className="App">
@@ -31,6 +33,8 @@ function App() {
             <Route path="/interact-with-holding" element = {<InteractWithHolding />} />
             <Route path="/join-game" element = {<JoinGame />} />
             <Route path="/play-game" element = {<PlayGame />} />
+            <Route path="/test-get-portfolios" element = {<TestGetPortfolios />} />
+            <Route path="/get-portfolios-by-player-profile-id" element = {<GetPortfoliosByPlayerProfileID />} />
           </Routes>
         </div>
         </AuthProvider>
