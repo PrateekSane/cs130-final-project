@@ -34,15 +34,35 @@ const PlayGame = () => {
   const [idToPlay, setIDToPlay] = useState<string | null>(null);
   const [holdings, setHoldings] = useState(sampleHoldings);
   const [scores, setScores] = useState(sampleScores);
+  const [auth, setAuth] = useState<any>();
 
   const userGamesEndpoint = "http://127.0.0.1:8000/user-games/";
   const stockDataEndpoint = "http://127.0.0.1:8000/interact-with-holding/";
+  const holdingsEndpoint = "http://127.0.0.1:8000/get-player-holdings/";
 
   const [stockData, setStockData] = useState<InteractWithHoldingValues>({
     symbol: "",
     game_id: "",
     shares: "",
   });
+  const fetchHoldings = async (authToken: any) => {
+    const data = { portfolio_id: 33 };
+    fetch(holdingsEndpoint, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${authToken.access}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    }).then(async (response) => {
+      if (!response.ok) {
+        throw new Error("Network response for hodlings was not ok");
+      }
+      const res = await response.json();
+      console.log(res.holdings);
+      return res.holdings;
+    });
+  };
 
   useEffect(() => {
     if (!authContext || !authContext.user || !authContext.authToken) {
@@ -52,7 +72,7 @@ const PlayGame = () => {
     }
 
     const { authToken } = authContext;
-
+    setAuth(authToken);
     fetch(userGamesEndpoint, {
       method: "GET",
       headers: {
@@ -91,6 +111,8 @@ const PlayGame = () => {
       ...stockData,
       game_id: localStorage.getItem("selectedGame"),
     });
+
+    const holdings = fetchHoldings(authToken);
   }, [authContext]);
 
   const handleChange = (
@@ -213,36 +235,9 @@ const PlayGame = () => {
               </p>
             ))}
       </div>
+      <button onClick={() => fetchHoldings(auth)}>fetch</button>
     </>
   );
 };
 
 export default PlayGame;
-
-// (idToPlay === null || localStorage.getItem('selectedGame') === null) ? (
-//     <>
-//         <div>
-//             <h2>User Games</h2>
-//             <div style={{ maxHeight: '80vh', overflowY: 'auto' }}>
-//                 {games.length === 0 ? (
-//                     <p>You are not in any current games!</p>
-//                 ) : (
-//                     <ul>
-//                         {games.map(game => (
-//                             <div>
-//                                 <li key={game?.game_id}>
-//                                     <p>Game ID: {game.game_id}</p>
-//                                     <p>Start Time: {game.start_time}</p>
-//                                     <p>End Time: {game.end_time}</p>
-//                                     <p>Starting Balance: {game.starting_balance}</p>
-//                                 </li>
-//                                 <button onClick={() => { enterGame(game.game_id) }}>Play</button>
-//                             </div>
-//                         ))}
-//                     </ul>
-//                 )}
-//             </div>
-
-//         </div>
-//     </>
-// ) : (

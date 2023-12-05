@@ -278,3 +278,24 @@ class PlayGameView(APIView):
         # except Exception as e:
         #     # Handle any exceptions
         #     return JsonResponse({'error': str(e)}, status=500)
+    
+class GetPlayerHoldings(APIView):
+    permission_classes = [IsAuthenticated,]
+
+    def post(self, request):
+        portfolio_id = request.data['portfolio_id']
+        holdings = Holding.objects.filter(portfolio_id=portfolio_id)
+        serialized_holdings = serializers.serialize('json', holdings)
+        holdings_data = json.loads(serialized_holdings)
+        values = {}
+        for hold in holdings_data:
+            cur_data = hold['fields']
+            ticker = cur_data['stock_symbol']
+            shares = int(cur_data['shares'])
+            purchase_price = float(cur_data['purchase_price'])
+            cur_value = shares*purchase_price
+            if ticker not in values:
+                values[ticker] = cur_value 
+            else:
+                values[ticker] += cur_value
+        return JsonResponse({'holdings': values})
