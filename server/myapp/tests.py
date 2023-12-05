@@ -4,6 +4,10 @@ from django.contrib.auth import get_user_model
 from .models import CustomUser, Game, PlayerProfile, Portfolio, Holding
 from datetime import datetime
 
+from django.urls import reverse
+from rest_framework.test import APIClient
+from rest_framework import status
+
 class ModelTests(TestCase):
     def setUp(self):
         self.user = get_user_model().objects.create_user(
@@ -62,3 +66,53 @@ class ModelTests(TestCase):
         self.assertEqual(holding.stock_symbol, 'AAPL')
         self.assertEqual(holding.shares, 10)
         self.assertEqual(holding.purchase_price, 150.00)
+    
+#views tests
+class RegisterViewTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.register_url = reverse('auth_register') 
+
+    def test_register_user(self):
+        data = {
+            'username': 'test123',
+            'email': 'test@gmail.com',
+            'password': 'test',
+            'first_name': 'Test',
+            'last_name': 'Test2',
+        }
+        response = self.client.post(self.register_url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('access', response.data)
+        self.assertTrue(CustomUser.objects.filter(username='test123').exists())
+
+    def test_invalid_registration_data(self):
+        # Test registration with invalid data
+        invalid_data = {
+            'username': 'testInvalid',
+            'password': 'testInvalidPass',
+        }
+        response = self.client.post(self.register_url, invalid_data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('error', response.data)
+
+
+class LoginViewTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.login_url = reverse('auth_login') 
+
+    def test_login_user(self):
+        # Assuming you've registered a user for testing purposes
+        user = CustomUser.objects.create_user(
+            username='test',
+            email='test@gmail.com',
+            password='test'
+        )
+        data = {
+            'email': 'test@gmail.com',
+            'password': 'test',
+        }
+        response = self.client.post(self.login_url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('access', response.data)
