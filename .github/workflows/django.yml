@@ -30,6 +30,7 @@ jobs:
         pip install -r server/requirements.txt
         pip install djangorestframework
         pip install --upgrade djangorestframework-simplejwt
+        pip install pymongo==3.12.3
     - name: Run Tests
       run: | 
         cd server 
