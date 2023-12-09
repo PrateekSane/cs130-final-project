@@ -92,3 +92,5 @@ A repository can also be setup to build continuously whenever a commit is pushed
 The CI script will also be run when a new pull request is created or when more commits are pushed to its linked `issue` branch. Such build assures peer reviewers that the new commits when accepted will not break the build. In fact, a successful CI build can be a prerequisute for peer reviewers to look at the changes.
 
 When a tag is pushed to the `master` branch, the CI script will additionally deliver and/or deploy the built artifact(s). The script can also be configured to create a Github release based on the tag.
+
+In order to manually trigger the CI/CD scripts, either make a pull request to the main branch or merge your pull request from the main branch. If any of the builds fail, the build can manually be re run from the actions tab on the repo.
