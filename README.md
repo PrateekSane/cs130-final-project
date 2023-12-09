@@ -93,4 +93,6 @@ The CI script will also be run when a new pull request is created or when more c
 
 When a tag is pushed to the `master` branch, the CI script will additionally deliver and/or deploy the built artifact(s). The script can also be configured to create a Github release based on the tag.
 
-In order to manually trigger the CI/CD scripts, either make a pull request to the main branch or merge your pull request from the main branch. If any of the builds fail, the build can manually be re run from the actions tab on the repo.
+### CI/CD triggering steps
+
+In order to manually trigger the CI/CD scripts, either make a pull request to the main branch or merge your pull request from the main branch. If any of the builds fail, the build can manually be re-run from the actions tab on the repo.
