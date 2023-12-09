@@ -24,8 +24,29 @@ from django.contrib.auth import login # Import your custom form
 from django.db import DatabaseError
 
 class RegisterView(APIView):
+
     permission_classes = [AllowAny]
     def post(self, request, format=None):
+        """
+        Post request to allow creating a user and adding credentials to the database. 
+        
+        Parameters
+        ----------
+        first : request
+            Data object. Fields that represent a User's attempt to create an account. 
+        Returns
+        -------
+
+        Response({'message': 'User registered and logged in successfully', "access":str(token.access_token)})
+
+        Raises
+        ------
+        HTTP_400_BAD_REQUEST
+            Invalid data for form (One example is invalid email ID)
+        
+        HTTP_500_INTERNAL_SERVER_ERROR
+            If the email or username already exists
+        """
         try:
             data = request.data
 
@@ -35,7 +56,6 @@ class RegisterView(APIView):
             first_name = data.get('first_name')
             last_name = data.get('last_name')
             x= uuid.uuid4()
-            print(x)
             form = CustomUserCreationForm({
                 'username': username,
                 'password': password,
@@ -61,14 +81,32 @@ class RegisterView(APIView):
 class LoginView(APIView):
     permission_classes = [AllowAny]
     def post(self, request, *args, **kwargs):
+        """
+        Post request to authenticate user log in. 
+        
+        Parameters
+        ----------
+        first : request
+            Data object. Fields that represent a User's attempt to log in. 
+        Returns
+        -------
+
+        Response({"access": str(token.access_token), "refresh": str(token)})
+
+        Raises
+        ------
+        Response({"error": "Invalid login credentials"})
+            Invalid login credentials.
+        
+        JsonResponse({'error': 'Invalid JSON data'}, status=400)
+            Json body of request was not properly formatted. 
+        """
         try:
             data = json.loads(request.body)
 
                 # Extract email and password from the JSON data
-            print(data)
             email = data["email"]
             password = data["password"]
-            print(email, password)
             email_backend = EmailBackend()
                 # Authenticate the user
             user = email_backend.authenticate(email=email, password=password)
@@ -81,8 +119,27 @@ class LoginView(APIView):
             return JsonResponse({'error': 'Invalid JSON data'}, status=400)
         
 class LogoutView(APIView):
+
     permission_classes = [IsAuthenticated,]
     def post(self, request):
+        """
+        Post request to log out a user.
+        
+        Parameters
+        ----------
+        request : Request
+            Data object. Fields that represent a User's attempt to log out. 
+        
+        Returns
+        -------
+        Response(status=status.HTTP_205_RESET_CONTENT)
+            Successful logout.
+
+        Raises
+        ------
+        Response(status=status.HTTP_400_BAD_REQUEST)
+            Failed logout due to an exception.
+        """
         try:
             refresh_token = request.data["refresh"]
             token = RefreshToken(refresh_token)
